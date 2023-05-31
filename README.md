@@ -1,7 +1,7 @@
 
 # Galactica-RTS
 RTS Game WIP, pygame, python
-![(Screenshot (5).png](Screenshot (5).png)
+Screenshot (5).png
 
 this is a hobby project, not professional. I love to code, even if it sometimes too complicated for my brain capacity :) 
 feel free to test it out! but it is still far away from finished.
