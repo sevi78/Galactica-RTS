@@ -40,13 +40,16 @@ build cities, metrolopes to enhance your population.
 **Problems:**
 
 i dont know how to create a runtime for windows ;( ... i tried many times with pyinstaller, but somehow the libraries are not found
+
 error/ warning:
 libpng warning: iCCP: known incorrect sRGB profile
+
 
 **technology used:**
 
 python, pygame, pygame_widget, pygame_menu, json
 pycharm, GIMP
+
 
 **to start the game:**
 
