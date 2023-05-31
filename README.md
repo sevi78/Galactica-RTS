@@ -10,6 +10,7 @@ Would be nice, if someone like to join the project or give some feedback.
 
 **GameConcept:**
 2d layered GUI
+
 travel through space, develop planets--- try to get a huge population in several solar systems
 
 grow food, get water, produce technology, industry
