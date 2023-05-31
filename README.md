@@ -9,6 +9,7 @@ feel free to test it out! but it is still far away from finished.
 Would be nice, if someone like to join the project or give some feedback. 
 
 **GameConcept:**
+
 2d layered GUI
 
 travel through space, develop planets--- try to get a huge population in several solar systems
