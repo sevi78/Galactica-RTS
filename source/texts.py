@@ -16,10 +16,10 @@ Raw materials: water\n
 Occupants: uninhabited\n
 Special: The water vapor of the planet seems to be hallucinogenic and slightly alcoholic, a longer stay of the crew must be expected. Spaceships are then difficult to control.\n
 """,
-"Susan XXX":
+"Kepler-22b":
 
 """
-Name: Susan XXX:\n
+Name: Kepler-22b:\n
 Type: Earthlike\n
 Raw materials: minerals and energy\n
 Residents: Sex addicts with 3 penises and/or up to 4 breasts, mostly two vaginas. Often a few crew members stay there forever, the rest bring at least one STD on board.\n

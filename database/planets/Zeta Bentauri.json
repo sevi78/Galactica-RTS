@@ -1,0 +1,15 @@
+{
+  "name": "Zeta Bentauri",
+  "x": 1495,
+  "y": 121,
+  "info_text": "\nName: Zeta Bentauri\n\nType: gas planet\n\nRaw materials: ???\n\nOccupants: uknown\n\nSpecial: nobody knows what or who lives there, if something lives there... unfortunately all probes sent to this planet never returnet...\n\n",
+  "population_grow": 0.0,
+  "alien_population": 0,
+  "buildings_max": 10,
+  "building_slot_amount": 3,
+  "specials": "None",
+  "type": "gas planet",
+  "possible_resources": "['water', 'energy', 'food', 'minerals', 'city', 'technology']",
+  "image_name_small": "Zeta Bentauri_60x60.png",
+  "image_name_big": "Zeta Bentauri_150x150.png"
+}

@@ -34,11 +34,11 @@ level_dict = {1:   {'01110001110110101':    {     'x': '600',
                                                   'type': '',
                                                   "possible_resources":["energy", "city"]},
 
-                    'Susan XXX':             {    'x': '350',
+                    'Kepler-22b':             {    'x': '350',
                                                   'y': '100',
                                                   'position': ('350', '100'),
-                                                  'image_name': 'Susan XXX_50x50.png',
-                                                  'name': 'Susan XXX',
+                                                  'image_name': 'Kepler-22b_50x50.png',
+                                                  'name': 'Kepler-22b',
                                                   'building_slot_amount': 3,
                                                   'population': 0,
                                                   'alien_population': 0,
@@ -115,13 +115,13 @@ def ramsch():
 
     # levels = {1:
     #                {"positions":{ '600_450': '01110001110110101_40x40.png', '250_400': 'GIN V.S.X.O._70x70.png', '350_300': 'Helios 12_60x60.png',
-    #                               '350_100': 'Susan XXX_40x40.png', '500_30': 'ur-anus_60x60.png', '180_500': 'XKGPRZ 7931_40x40.png',
+    #                               '350_100': 'Kepler-22b_40x40.png', '500_30': 'ur-anus_60x60.png', '180_500': 'XKGPRZ 7931_40x40.png',
     #                               '960_340': 'Zeta Bentauri_60x60.png', '750_120': 'zork_50x50.png'},
     #                 "building_slot_amounts":
     # }}
 
     # level1  = {'600_450': '01110001110110101_40x40.png', '250_400': 'GIN V.S.X.O._70x70.png', '350_300': 'Helios 12_60x60.png',
-    #      '350_100': 'Susan XXX_40x40.png', '500_30': 'ur-anus_60x60.png', '180_500': 'XKGPRZ 7931_40x40.png',
+    #      '350_100': 'Kepler-22b_40x40.png', '500_30': 'ur-anus_60x60.png', '180_500': 'XKGPRZ 7931_40x40.png',
     #      '960_340': 'Zeta Bentauri_60x60.png', '750_120': 'zork_50x50.png'}
 
     # level_image_names = []

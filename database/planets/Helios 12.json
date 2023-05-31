@@ -1,0 +1,15 @@
+{
+  "name": "Helios 12",
+  "x": 89,
+  "y": 410,
+  "info_text": "\nName: Helios 12\n\nType: gas planet\n\nRaw materials: water and energy\n\nOccupants: uninhabited\n\nSpecial: This gas planet is on the threshold of the sun and quite warm. A longer stay is therefore not recommended, unless you want to be contaminated or well cooked.\n\n",
+  "population_grow": 0.0,
+  "alien_population": 0,
+  "buildings_max": 10,
+  "building_slot_amount": 3,
+  "specials": "None",
+  "type": "gas planet",
+  "possible_resources": "['energy', 'city']",
+  "image_name_small": "Helios 12_70x70.png",
+  "image_name_big": "Helios 12_150x150.png"
+}
