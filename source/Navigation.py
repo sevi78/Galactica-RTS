@@ -516,6 +516,9 @@ class Navigation(WidgetBase):
                 (self.getX(), self.getY())), 15, 1)
 
             #self.draw_grid()
+
+    def navigate_to(self, obj):
+        print ("not implemented yet")
     def debug(self):
         pprint(self.__dict__)
 
