@@ -2,6 +2,7 @@
 # Galactica-RTS
 RTS Game WIP, pygame, python
 
+![Screenshot (5)](https://github.com/sevi78/Galactica-RTS/assets/125169048/34202828-a043-4936-9e83-0371e0521da1)
 
 this is a hobby project, not professional. I love to code, even if it sometimes too complicated for my brain capacity :) 
 feel free to test it out! but it is still far away from finished.
