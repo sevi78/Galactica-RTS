@@ -1,0 +1,15 @@
+{
+  "name": "Sun",
+  "x": 900,
+  "y": 450,
+  "info_text": "Type: sun\n\nRaw materials: --- molten everything ---\n\n Occupants: nobody can live on a sun!\n",
+  "population_grow": 0.0,
+  "alien_population": 0,
+  "buildings_max": 0,
+  "building_slot_amount":0 ,
+  "specials": "None",
+  "type": "sun",
+  "possible_resources": "['energy']",
+  "image_name_small": "sonnecomic_110x110.png",
+  "image_name_big": "sonnecomic_110x110.png"
+}
