@@ -395,7 +395,7 @@ class UIBuilder(SceneBuilder):
             )
 
     def create_event_panel(self):
-        self.event_panel = EventPanel(win=self.win, x=300, y=200, width=900, height=600, center=True, parent=self, layer=4)
+        self.event_panel = EventPanel(win=self.win, x=300, y=200, width=900, height=600, center=True, parent=self, layer=9)
 
     def create_tooltip(self):
         # tooltip
