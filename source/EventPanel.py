@@ -19,7 +19,7 @@ class EventPanel(WidgetBase, EventText):
     def __init__(self, win, x, y, width, height, **kwargs):
         super().__init__(win, x, y, width, height, **kwargs)
         EventText.__init__(self)
-        self.layer = kwargs.get("layer", 4)
+        self.layer = kwargs.get("layer", 9)
         self.win = win
         self.parent = kwargs.get("parent")
         self.frame_color =source.Globals.colors.frame_color
