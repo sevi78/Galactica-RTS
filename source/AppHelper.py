@@ -1,21 +1,8 @@
 import math
-import os
 import sys
 
 import pygame
-
-from source.config import production, planet_positions
-
-
-class Inspector:# doesnt work :(
-    def memory(self):
-        # Getting all memory using os.popen()
-        total_memory, used_memory, free_memory = map(
-            int, os.popen('free -t -m').readlines()[-1].split()[1:])
-
-        usage = "RAM memory % used: " +  str(round((used_memory / total_memory) * 100, 2)) + "used_memory: " + str(used_memory)
-
-        return usage
+from source.__init__ import production, planet_positions
 
 
 class UIHelper:
@@ -357,45 +344,4 @@ def limit_positions(obj):
             obj.hide()
         else:
             obj.show()
-
-def orbit(obj):
-    return
-    # Add the rotated offset vector to the pos vector to get the rect.center.
-    obj.rect.center = obj.pos + obj.offset.rotate(obj.orbit_angle)
-    orbit_point = obj.orbit_object.imageRect.center + self.offset.rotate(self.angle)
-
-    self.imageRect.center = orbit_point
-
-    def update(obj):
-        obj.orbit_angle -= 2
-        # Add the rotated offset vector to the pos vector to get the rect.center.
-        obj.rect.center = obj.pos + obj.offset.rotate(obj.orbit_angle)
-
-
-    # print (self.imageRect.center)
-
-
-
-    # print (self.imageRect.center)
-    # self.setX(self.imageRect.left)
-    # self.setY(self.imageRect.top)
-    #
-    # # orbit_point = (self.imageRect.left,self.imageRect.top)
-    #
-    # if self.get_distance_to(orbit_point) >= 1:
-    #     self.move_to(orbit_point)
-    #     self.orbiting = False
-    # else:
-    #     self.orbiting = True
-    #
-    # if self.orbiting:
-    # self.setX(self.imageRect.left)
-    # self.setY(self.imageRect.top)
-    # self.orbiting = True
-
-    # set progress bar position
-
-
-
-
 

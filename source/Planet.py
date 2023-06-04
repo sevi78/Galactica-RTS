@@ -289,6 +289,7 @@ class Planet(Button, PlanetButtons):
         self.orbit_angle = 0
         self.orbit_distance = 0
         self.orbit_object = kwargs.get("orbit_object", None)
+        self.enable_orbit = False
         self.offset = Vector2(200, 0)
         self.orbit_speed = 0.002
 
@@ -576,7 +577,6 @@ class Planet(Button, PlanetButtons):
     def update(self): 
         """
         updates the planet...a lot of stuff, hav e look on the code, its self explaining
-        :return:
         """
         if self.name == "Sun":
             self.disable()
@@ -590,7 +590,13 @@ class Planet(Button, PlanetButtons):
             return
 
         # update orbit angle
-        self.orbit()
+        if source.Globals.enable_zoom:
+            self.enable_orbit = False
+        else:
+            self.enable_orbit = True
+
+        if self.enable_orbit:
+            self.orbit()
         # surface = pygame.surface.Surface([self.orbit_distance, self.orbit_distance])
         # pygame.draw.circle(surface, (140, 170, 100), (self.orbit_object.getX(), self.orbit_object.getY()),
         #     self.orbit_distance, 1)

@@ -24,7 +24,7 @@ from source.ToolTip import ToolTip
 from source.UniverseBackground import Universe
 from source.config import planet_positions, prices, production
 from source.texts import planet_texts
-
+from paning_and_zooming import PanZoomHandler
 
 class SceneParams:
     def __init__(self):
@@ -78,12 +78,14 @@ class SceneBuilder(SceneParams):
         :param width:
         :param height:
         """
+
         SceneParams.__init__(self)
         # UI Helper
         self.ui_helper = UIHelper(self)
         self.level = 1
         self.game_objects = []
         self.planets = []
+        self.collectables = []
 
         # background
         self.create_background()
@@ -307,7 +309,9 @@ class UIBuilder(SceneBuilder):
 
         SceneBuilder.__init__(self, width, height)
         if enable_zoom:
-            self.zoom_win = ZoomWindow(win=source.Globals.win, parent=self)
+            self.pan_zoom_handler = PanZoomHandler(
+                source.Globals.win, source.Globals.WIDTH,source.Globals.HEIGHT,source.Globals.scene_width,
+                source.Globals.scene_height, parent = self)
 
         #self.building_editor = BuildingEditor()
         self.clock = pygame.time.Clock()

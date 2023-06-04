@@ -1,0 +1,251 @@
+import pygame as pg
+import pygame.transform
+
+import Globals
+from WidgetHandler import *
+
+# Place a picture called "sheet.png" in the same folder as this program!
+# Zoom with mousewheel, pan with left mouse button
+# Print a snapshot of the screen with "P"
+
+sprite_sheet = Globals.images[
+    Globals.pictures_path]["planets"]["zork_50x50.png"]
+
+SCREEN_WIDTH = 920  # sprite_sheet.get_rect().size[0]
+SCREEN_HEIGHT = 800  # sprite_sheet.get_rect().size[1]
+WORLD_WIDTH = 2000
+WORLD_HEIGHT = 2000
+# screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+clock = pg.time.Clock()
+
+
+class PanZoomHandler:
+    def __init__(self, screen, screen_width, screen_height, world_width, world_height, **kwargs):
+        self.key_pressed = False
+        self.zoomable = False
+        self.parent = kwargs.get("parent")
+        self.zoomable_widgets = []
+        self.screen_width = screen_width
+        self.screen_height = screen_height
+        self.legacy_screen = pg.Surface((self.screen_width, self.screen_height), pygame.RESIZABLE)
+        self.screen = screen
+        self.new_screen = None
+
+        self.world_width = world_width
+        self.world_height = world_height
+        self.world_right = 0
+        self.world_left = 0
+        self.world_top = 0
+        self.world_bottom = 0
+        self.world_offset_x = 0
+        self.world_offset_y = 0
+
+        self.mouseworld_y_before = None
+        self.mouseworld_x_before = None
+        self.mouseworld_y_after = None
+        self.mouseworld_x_after = None
+
+        self.scale_up = 1.2
+        self.scale_down = 0.8
+
+        self.tab = 1
+        self.zoom = 1
+        self.zoom_max = 20
+        self.zoom_min = 0.1
+
+        self.update_screen = True
+        self.panning = False
+        self.pan_start_pos = None
+
+        self.grid_size = 100
+        self.grid_width = 1
+
+
+
+    def listen(self, events):
+        # print ("panning_and_zooming:", self.parent.planets)
+        # Mouse screen coords
+        mouse_x, mouse_y = pg.mouse.get_pos()
+
+        # event handler
+        for event in events:
+            # ctrl:
+            if event.type == pygame.KEYDOWN:
+                if event.key == 1073742048:  # ctrl:
+                    self.key_pressed = True
+
+            elif event.type == pygame.KEYUP:
+                if event.key == 1073742048:
+                    self.key_pressed = False
+
+            # if not self.key_pressed:
+            #     return
+
+            elif event.type == pg.MOUSEBUTTONDOWN:
+                #self.set_zoom(event, mouse_x, mouse_y)
+                if event.button == 4 or event.button == 5:
+                    # X and Y before the zoom
+                    self.mouseworld_x_before, self.mouseworld_y_before = self.screen_2_world(mouse_x, mouse_y)
+
+                    # ZOOM IN/OUT
+                    if event.button == 4 and self.zoom < self.zoom_max:
+                        self.zoom *= self.scale_up
+                    elif event.button == 5 and self.zoom > self.zoom_min:
+                        self.zoom *= self.scale_down
+
+                    # X and Y after the zoom
+                    self.mouseworld_x_after, self.mouseworld_y_after = self.screen_2_world(mouse_x, mouse_y)
+
+                    # Do the difference between before and after, and add it to the offset
+                    self.world_offset_x += self.mouseworld_x_before - self.mouseworld_x_after
+                    self.world_offset_y += self.mouseworld_y_before - self.mouseworld_y_after
+
+                    # set grid_width
+                    self.set_grid_width()
+                else:
+                    self.tab = 2
+
+                if event.button == 1:
+                    # PAN START
+                    self.panning = True
+                    self.pan_start_pos = mouse_x, mouse_y
+                self.tab = 1
+
+            elif event.type == pg.MOUSEBUTTONUP:
+                if event.button == 1 and self.panning:
+                    # PAN STOP
+                    self.panning = False
+                    self.tab = 2
+
+
+
+        # Draw the screen
+        if self.tab == 1:# and self.key_pressed == True:
+            self.pan_and_zoom()
+        if self.panning:
+            self.pan(mouse_x, mouse_y)
+
+
+
+    def pan_and_zoom(self):
+        """
+        the main function:
+        iterates over the lists of object to be pan_zoomed
+        parent is the app
+        every zoomable object nedds to have an attribute "zoomable" and must be registred in one of these lists:
+
+        """
+        print("pan_and_zoom: ")
+        for zoomable_object in self.parent.planets:
+            self.set_position_and_size(zoomable_object)
+            new_size = (zoomable_object.size_x * self.zoom, zoomable_object.size_y * self.zoom)
+            zoomable_object.image = pygame.transform.scale(zoomable_object.planet_image, new_size)
+            zoomable_object.set_center()
+
+        for zoomable_object in self.parent.universe.universe:
+            self.set_position_and_size(zoomable_object)
+            if zoomable_object.image_raw:
+                new_size = (zoomable_object.size_x * self.zoom, zoomable_object.size_y * self.zoom)
+                zoomable_object.image = pygame.transform.scale(zoomable_object.image_raw, new_size)
+
+        for zoomable_object in self.parent.ships:
+            x, y = self.world_2_screen(zoomable_object.x, zoomable_object.y)
+            zoomable_object.setX(x - zoomable_object.getWidth() / 2)
+            zoomable_object.setY(y - zoomable_object.getHeight() / 2)
+            zoomable_object.setWidth(zoomable_object.size_x * self.zoom)
+            zoomable_object.setHeight(zoomable_object.size_y * self.zoom)
+            zoomable_object.image_rot = pygame.transform.scale(zoomable_object.image_raw, (zoomable_object.getWidth() * self.zoom, zoomable_object.getHeight() * self.zoom))
+            zoomable_object.image_rot_rect = zoomable_object.image_raw.get_rect()
+
+        for zoomable_object in self.parent.collectables:
+            self.set_position_and_size(zoomable_object)
+
+    def set_position_and_size(self, zoomable_object):
+        x, y = self.world_2_screen(zoomable_object.x, zoomable_object.y)
+        zoomable_object.setX(x - zoomable_object.getWidth() / 2)
+        zoomable_object.setY(y - zoomable_object.getHeight() / 2)
+        zoomable_object.setWidth(zoomable_object.size_x * self.zoom)
+        zoomable_object.setHeight(zoomable_object.size_y * self.zoom)
+
+    def set_grid_width(self):
+        self.grid_width = int(1 / self.zoom * 10)
+
+    def set_zoom(self, event, mouse_x, mouse_y):
+        if event.button == 4 or event.button == 5:
+            # X and Y before the zoom
+            self.mouseworld_x_before, self.mouseworld_y_before = self.screen_2_world(mouse_x, mouse_y)
+
+            # ZOOM IN/OUT
+            if event.button == 4 and self.zoom < self.zoom_max:
+                self.zoom *= self.scale_up
+            elif event.button == 5 and self.zoom > self.zoom_min:
+                self.zoom *= self.scale_down
+
+            # X and Y after the zoom
+            self.mouseworld_x_after, self.mouseworld_y_after = self.screen_2_world(mouse_x, mouse_y)
+
+            # Do the difference between before and after, and add it to the offset
+            self.world_offset_x += self.mouseworld_x_before - self.mouseworld_x_after
+            self.world_offset_y += self.mouseworld_y_before - self.mouseworld_y_after
+
+            # set grid_width
+            self.set_grid_width()
+        else:
+            self.tab = 2
+
+        if event.button == 1:
+            # PAN START
+            self.panning = True
+            self.pan_start_pos = mouse_x, mouse_y
+
+    def update_legacy_screen(self):# no use
+        # Updates the legacy screen if something has changed in the image data
+        for x in range(self.world_width):
+            for y in range(self.world_height):
+                pygame.draw.line(self.legacy_screen, Globals.colors.frame_color, (
+                    x * self.grid_size, 0), (
+                    x * self.grid_size, y * self.grid_size), self.grid_width)
+
+                pygame.draw.line(self.legacy_screen, Globals.colors.frame_color, (
+                    x, y * self.grid_size), (
+                    x * self.grid_size, y * self.grid_size), self.grid_width)
+
+                # self.legacy_screen.blit(sprite_sheet, (x*300, y*300))
+
+        self.update_screen = False
+
+    def pan(self, mouse_x, mouse_y):
+        # Pans the screen if the left mouse button is held
+        self.world_offset_x -= (mouse_x - self.pan_start_pos[0]) / self.zoom
+        self.world_offset_y -= (mouse_y - self.pan_start_pos[1]) / self.zoom
+        self.pan_start_pos = mouse_x, mouse_y
+
+    def world_2_screen(self, world_x, world_y):
+        screen_x = (world_x - self.world_offset_x) * self.zoom
+        screen_y = (world_y - self.world_offset_y) * self.zoom
+        return [screen_x, screen_y]
+
+    def screen_2_world(self, screen_x, screen_y):
+        world_x = (screen_x / self.zoom) + self.world_offset_x
+        world_y = (screen_y / self.zoom) + self.world_offset_y
+        return [world_x, world_y]
+
+#
+# pan_zoom_handler = PanZoomHandler(screen, SCREEN_WIDTH, SCREEN_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT)
+# zoomable_widget = Zoomable_Widget(screen, 100,100,100,100,isSubWidget=False,image=sprite_sheet, onClick=lambda: print("ok"))
+# pan_zoom_handler.zoomable_widgets.append(zoomable_widget)
+#
+# # game loop
+# loop = True
+# while loop:
+#     # Banner FPS
+#     #pg.display.set_caption('(%d FPS)' % (clock.get_fps()))
+#
+#     # events, listen
+#     events = pg.event.get()
+#     pan_zoom_handler.listen(events)
+#
+#     # looping
+#     update(events)
+#     pg.display.update()
+#     clock.tick(600)

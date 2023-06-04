@@ -37,12 +37,17 @@ class WidgetBase(ABC, Debugger):
         self._width = width
         self._height = height
         self._isSubWidget = isSubWidget
+        self.size_x = width
+        self.size_y = height
 
         self._hidden = False
         self._disabled = False
         self.property = kwargs.get("property", None)
         self.layer = kwargs.get("layer", None)
         self.layers = kwargs.get("layers", None)
+
+        self.image = kwargs.get("image", None)
+        self.image_raw = kwargs.get("image", None)
         self.debug = False
 
         if isSubWidget:
