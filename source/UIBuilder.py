@@ -24,7 +24,7 @@ from source.ToolTip import ToolTip
 from source.UniverseBackground import Universe
 from source.config import planet_positions, prices, production
 from source.texts import planet_texts
-from paning_and_zooming import PanZoomHandler
+from source.paning_and_zooming import PanZoomHandler
 
 class SceneParams:
     def __init__(self):
