@@ -1,8 +1,10 @@
 import pygame as pg
 import pygame.transform
 
-import Globals
-from WidgetHandler import *
+import source
+from source import Globals
+
+from source.WidgetHandler import *
 
 # Place a picture called "sheet.png" in the same folder as this program!
 # Zoom with mousewheel, pan with left mouse button
