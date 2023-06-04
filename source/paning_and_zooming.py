@@ -6,12 +6,8 @@ from source import Globals
 
 from source.WidgetHandler import *
 
-# Place a picture called "sheet.png" in the same folder as this program!
-# Zoom with mousewheel, pan with left mouse button
-# Print a snapshot of the screen with "P"
 
-sprite_sheet = Globals.images[
-    Globals.pictures_path]["planets"]["zork_50x50.png"]
+# Zoom with mousewheel, pan with left mouse button
 
 SCREEN_WIDTH = 920  # sprite_sheet.get_rect().size[0]
 SCREEN_HEIGHT = 800  # sprite_sheet.get_rect().size[1]
@@ -59,11 +55,6 @@ class PanZoomHandler:
         self.panning = False
         self.pan_start_pos = None
 
-        self.grid_size = 100
-        self.grid_width = 1
-
-
-
     def listen(self, events):
         # print ("panning_and_zooming:", self.parent.planets)
         # Mouse screen coords
@@ -101,31 +92,33 @@ class PanZoomHandler:
                     # Do the difference between before and after, and add it to the offset
                     self.world_offset_x += self.mouseworld_x_before - self.mouseworld_x_after
                     self.world_offset_y += self.mouseworld_y_before - self.mouseworld_y_after
+                    self.tab = 1
 
-                    # set grid_width
-                    self.set_grid_width()
-                else:
-                    self.tab = 2
 
-                if event.button == 1:
+                elif event.button == 1:
                     # PAN START
                     self.panning = True
                     self.pan_start_pos = mouse_x, mouse_y
-                self.tab = 1
+
+                    self.tab = 1
 
             elif event.type == pg.MOUSEBUTTONUP:
+
                 if event.button == 1 and self.panning:
                     # PAN STOP
                     self.panning = False
                     self.tab = 2
+                elif event.button == 4 or event.button == 5:
+                    self.tab = 2
+
+            if self.panning:
+                self.pan(mouse_x, mouse_y)
 
 
-
-        # Draw the screen
-        if self.tab == 1:# and self.key_pressed == True:
-            self.pan_and_zoom()
-        if self.panning:
-            self.pan(mouse_x, mouse_y)
+            print("MBU ", self.tab)
+            # Draw the screen
+            if self.tab == 1:# and self.key_pressed == True:
+                self.pan_and_zoom()
 
 
 
@@ -137,7 +130,7 @@ class PanZoomHandler:
         every zoomable object nedds to have an attribute "zoomable" and must be registred in one of these lists:
 
         """
-        print("pan_and_zoom: ")
+        #print("pan_and_zoom: ")
         for zoomable_object in self.parent.planets:
             self.set_position_and_size(zoomable_object)
             new_size = (zoomable_object.size_x * self.zoom, zoomable_object.size_y * self.zoom)
@@ -157,10 +150,14 @@ class PanZoomHandler:
             zoomable_object.setWidth(zoomable_object.size_x * self.zoom)
             zoomable_object.setHeight(zoomable_object.size_y * self.zoom)
             zoomable_object.image_rot = pygame.transform.scale(zoomable_object.image_raw, (zoomable_object.getWidth() * self.zoom, zoomable_object.getHeight() * self.zoom))
-            zoomable_object.image_rot_rect = zoomable_object.image_raw.get_rect()
+            #zoomable_object.image_rot_rect = zoomable_object.image_raw.get_rect()
 
+
+        #print (self.parent.collectables, self.parent)
         for zoomable_object in self.parent.collectables:
             self.set_position_and_size(zoomable_object)
+            zoomable_object.image = pygame.transform.scale(zoomable_object.image_raw,
+                (zoomable_object.getWidth() * self.zoom, zoomable_object.getHeight() * self.zoom))
 
     def set_position_and_size(self, zoomable_object):
         x, y = self.world_2_screen(zoomable_object.x, zoomable_object.y)
@@ -168,9 +165,6 @@ class PanZoomHandler:
         zoomable_object.setY(y - zoomable_object.getHeight() / 2)
         zoomable_object.setWidth(zoomable_object.size_x * self.zoom)
         zoomable_object.setHeight(zoomable_object.size_y * self.zoom)
-
-    def set_grid_width(self):
-        self.grid_width = int(1 / self.zoom * 10)
 
     def set_zoom(self, event, mouse_x, mouse_y):
         if event.button == 4 or event.button == 5:
@@ -199,22 +193,6 @@ class PanZoomHandler:
             # PAN START
             self.panning = True
             self.pan_start_pos = mouse_x, mouse_y
-
-    def update_legacy_screen(self):# no use
-        # Updates the legacy screen if something has changed in the image data
-        for x in range(self.world_width):
-            for y in range(self.world_height):
-                pygame.draw.line(self.legacy_screen, Globals.colors.frame_color, (
-                    x * self.grid_size, 0), (
-                    x * self.grid_size, y * self.grid_size), self.grid_width)
-
-                pygame.draw.line(self.legacy_screen, Globals.colors.frame_color, (
-                    x, y * self.grid_size), (
-                    x * self.grid_size, y * self.grid_size), self.grid_width)
-
-                # self.legacy_screen.blit(sprite_sheet, (x*300, y*300))
-
-        self.update_screen = False
 
     def pan(self, mouse_x, mouse_y):
         # Pans the screen if the left mouse button is held

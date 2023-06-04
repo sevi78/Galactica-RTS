@@ -148,6 +148,8 @@ class ShipMoving:
             self._y = self.orbit_point[1]
 
         self.set_center()
+        # self.x = self._x
+        # self.y = self._y
 
     def show_connections(self):
         if self.target:
@@ -298,6 +300,8 @@ class ShipMoving:
         # get experience
         self.set_experience(1)
 
+        self.x = self._x
+        self.y = self._y
 
         return True
 

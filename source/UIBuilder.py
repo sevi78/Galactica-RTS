@@ -297,7 +297,7 @@ class SceneBuilder(SceneParams):
 
                                     energy = 100,
                                     minerals = 1000,
-                                    parent = None,)
+                                    parent = self,)
 
 class UIBuilder(SceneBuilder):
     """this creates all UI Elements:

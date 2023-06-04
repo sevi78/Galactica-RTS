@@ -7,6 +7,7 @@ class CollectableItem(Button,Moveable):
     def __init__(self, win, x, y, width, height,  **kwargs):
         Button.__init__(self, win, x, y, width, height, **kwargs)
         Moveable.__init__(self,x,y,width,height, kwargs)
+        self.zoomable = True
         self.moveable = False
         self.explored = False
         self.property = "item"
@@ -15,6 +16,7 @@ class CollectableItem(Button,Moveable):
         self.layer = kwargs.get("layer", 1)
         self.parent = kwargs.get("parent")
         self.image = kwargs.get("image")
+        self.image_raw = kwargs.get("image")
         self.info_text = kwargs.get("infotext")
         self.energy = kwargs.get("energy", 0)
         self.food = kwargs.get("food", 0)
@@ -24,6 +26,8 @@ class CollectableItem(Button,Moveable):
         self.technology = kwargs.get("technology", None)
         self.resources =  {"water": self.water, "energy":self.energy, "food":self.food, "minerals":self.minerals}
         self.collect_text = ""
+
+        self.parent.collectables.append(self)
 
     def collect_resources(self, collector):
         for key, value in self.resources.items():
