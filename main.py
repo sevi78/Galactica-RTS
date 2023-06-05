@@ -114,7 +114,7 @@ class GameLogic:
                 key=widget_key,
                 value=widget_value,
                 planet=planet,
-                tooltip="building widdgetS", layer=4
+                tooltip="building widdget", layer=4
                 )
             # add building widget to building cue to make shure it can be build only if building_cue is < building_slots_amount
             planet.building_cue += 1
@@ -235,13 +235,13 @@ class App(AppHelper, UIBuilder, GameLogic):
 
             # draw background, fog of war
             if hasattr(self,"background_image"):
-                #self.win.blit(self.bg, (0, 0))
-                pass
                 self.background_image.draw()
 
+
+            self.update_game_objects(events)
             if enable_zoom:
                 self.pan_zoom_handler.listen(events)
-            self.update_game_objects(events)
+
             #self.box_selection.listen(events, self.win)
 
             update(events)
