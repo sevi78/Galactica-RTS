@@ -3,9 +3,9 @@ import pygame.transform
 
 import source
 from source import Globals
+from source.AppHelper import debug_positions
 
 from source.WidgetHandler import *
-
 
 # Zoom with mousewheel, pan with left mouse button
 
@@ -75,7 +75,7 @@ class PanZoomHandler:
             #     return
 
             elif event.type == pg.MOUSEBUTTONDOWN:
-                #self.set_zoom(event, mouse_x, mouse_y)
+                # self.set_zoom(event, mouse_x, mouse_y)
                 if event.button == 4 or event.button == 5:
                     # X and Y before the zoom
                     self.mouseworld_x_before, self.mouseworld_y_before = self.screen_2_world(mouse_x, mouse_y)
@@ -94,6 +94,9 @@ class PanZoomHandler:
                     self.world_offset_y += self.mouseworld_y_before - self.mouseworld_y_after
                     self.tab = 1
 
+                    debug_positions(self.mouseworld_x_after, self.mouseworld_y_after, "brown", "pan_zoom.listen: self.mouseworld_x_after, self.mouseworld_y_after: ", 13)
+                    debug_positions(self.mouseworld_x_before, self.mouseworld_y_before, "orange", "pan_zoom.listen: self.mouseworld_x_before, self.mouseworld_y_before: ", 25)
+                    debug_positions(self.world_offset_x, self.world_offset_y, "pink", "pan_zoom.listen: self.world_offset_x, self.world_offset_y: ", 15)
 
                 elif event.button == 1:
                     # PAN START
@@ -114,13 +117,10 @@ class PanZoomHandler:
             if self.panning:
                 self.pan(mouse_x, mouse_y)
 
-
             print("MBU ", self.tab)
             # Draw the screen
-            if self.tab == 1:# and self.key_pressed == True:
+            if self.tab == 1:  # and self.key_pressed == True:
                 self.pan_and_zoom()
-
-
 
     def pan_and_zoom(self):
         """
@@ -130,7 +130,7 @@ class PanZoomHandler:
         every zoomable object nedds to have an attribute "zoomable" and must be registred in one of these lists:
 
         """
-        #print("pan_and_zoom: ")
+        # print("pan_and_zoom: ")
         for zoomable_object in self.parent.planets:
             self.set_position_and_size(zoomable_object)
             new_size = (zoomable_object.size_x * self.zoom, zoomable_object.size_y * self.zoom)
@@ -145,15 +145,24 @@ class PanZoomHandler:
 
         for zoomable_object in self.parent.ships:
             x, y = self.world_2_screen(zoomable_object.x, zoomable_object.y)
-            zoomable_object.setX(x - zoomable_object.getWidth() / 2)
-            zoomable_object.setY(y - zoomable_object.getHeight() / 2)
-            zoomable_object.setWidth(zoomable_object.size_x * self.zoom)
-            zoomable_object.setHeight(zoomable_object.size_y * self.zoom)
-            zoomable_object.image_rot = pygame.transform.scale(zoomable_object.image_raw, (zoomable_object.getWidth() * self.zoom, zoomable_object.getHeight() * self.zoom))
-            #zoomable_object.image_rot_rect = zoomable_object.image_raw.get_rect()
+            if zoomable_object.moving:
+                nx, ny = self.screen_2_world((zoomable_object.x - self.world_offset_x) * self.zoom, (
+                            zoomable_object.y - self.world_offset_y) * self.zoom)
+                zoomable_object._x = nx
+                zoomable_object._y = ny
+            else:
 
+                zoomable_object.setX(x - (zoomable_object.getWidth() / 2))
+                zoomable_object.setY(y - (zoomable_object.getHeight() / 2))
+                zoomable_object.setWidth(zoomable_object.size_x * self.zoom)
+                zoomable_object.setHeight(zoomable_object.size_y * self.zoom)
+                zoomable_object.image_rot = pygame.transform.scale(zoomable_object.image_raw, (
+                zoomable_object.getWidth() * self.zoom, zoomable_object.getHeight() * self.zoom))
+            # zoomable_object.image_rot_rect = zoomable_object.image_raw.get_rect()
 
-        #print (self.parent.collectables, self.parent)
+            # nx,ny = self.screen_2_world(zoomable_object._x-self.world_offset_x, zoomable_object._y-self.world_offset_x)
+
+        # print (self.parent.collectables, self.parent)
         for zoomable_object in self.parent.collectables:
             self.set_position_and_size(zoomable_object)
             zoomable_object.image = pygame.transform.scale(zoomable_object.image_raw,

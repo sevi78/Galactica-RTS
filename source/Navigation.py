@@ -3,7 +3,6 @@ from pprint import pprint
 import pygame
 from pygame_widgets.util import drawText
 
-
 import source.Globals
 from source.Globals import *
 from source.AppHelper import limit_positions
@@ -19,20 +18,21 @@ class Navigation_old:
         # self.limit_y = source.Globals.scene_height -pygame.display.get_surface().get_height()
 
         # define borders
-        self.left_end = self.parent.universe.left_end - pygame.display.get_surface().get_width()/2
-        self.right_end = self.parent.universe.right_end - pygame.display.get_surface().get_width()/2
-        self.top_end = self.parent.universe.top_end - pygame.display.get_surface().get_height()/2
-        self.bottom_end = self.parent.universe.bottom_end - pygame.display.get_surface().get_height()/2
+        self.left_end = self.parent.universe.left_end - pygame.display.get_surface().get_width() / 2
+        self.right_end = self.parent.universe.right_end - pygame.display.get_surface().get_width() / 2
+        self.top_end = self.parent.universe.top_end - pygame.display.get_surface().get_height() / 2
+        self.bottom_end = self.parent.universe.bottom_end - pygame.display.get_surface().get_height() / 2
 
-        self.position_x = pygame.display.get_surface().get_width()/2
-        self.position_y = pygame.display.get_surface().get_height()/2
+        self.position_x = pygame.display.get_surface().get_width() / 2
+        self.position_y = pygame.display.get_surface().get_height() / 2
         self.value = 0.0
         self.acceleration = 35.0
         self.acceleration_max = 5.0
         self.acceleration_min = 1.0
-        self.moveables = WidgetHandler.layers[0] + WidgetHandler.layers[1] + WidgetHandler.layers[3] + WidgetHandler.layers[8] + WidgetHandler.layers[4]
+        self.moveables = WidgetHandler.layers[0] + WidgetHandler.layers[1] + WidgetHandler.layers[3] + \
+                         WidgetHandler.layers[8] + WidgetHandler.layers[4]
         self.moving = False
-        self.stopps = {"left":False, "right":False, "up":False, "down":False}
+        self.stopps = {"left": False, "right": False, "up": False, "down": False}
         self.stopp = False
         self.key_pressed = False
         self.mouse_pressed = False
@@ -77,7 +77,7 @@ class Navigation_old:
         for event in events:
             # ctrl:
             if event.type == pygame.KEYDOWN:
-                if event.key == 1073742048:# ctrl:
+                if event.key == 1073742048:  # ctrl:
                     self.key_pressed = True
 
             elif event.type == pygame.KEYUP:
@@ -119,7 +119,6 @@ class Navigation_old:
         #         self.position_y -= self.y
         #         self.move_objects()
 
-
         # if self.key_pressed == True and self.mouse_pressed == True:
         #     #self.limit_position()
         #
@@ -145,15 +144,12 @@ class Navigation_old:
         #
         #     self.move_objects()
 
-            # elif self.position_x > self.right_end:
-            #     self.position_x = self.right_end - 1
-            #     return
-            # else:
-            #     self.move_objects()
-            #     self.debug_position()
-
-
-
+        # elif self.position_x > self.right_end:
+        #     self.position_x = self.right_end - 1
+        #     return
+        # else:
+        #     self.move_objects()
+        #     self.debug_position()
 
     def limit_position(self):
         # zero_x = self.limit_x * -1
@@ -179,7 +175,6 @@ class Navigation_old:
         self.stopps["right"] = self.position_x > self.right_end
         self.stopps["up"] = self.position_x > self.right_end
         self.stopps["down"] = self.position_y > self.bottom_end
-
 
         # if self.position_x < self.left_end:
         #     #self.position_x = self.left_end
@@ -210,12 +205,12 @@ class Navigation_old:
         print("Navigation.limit_position:self.position_x, self.position_y: ", self.position_x, self.position_y)
         # print("zero_x, zero_y,", zero_x, zero_y, )
         # print("self.limit_x, self.limit_y,:", self.limit_x, self.limit_y, )
-        print ("self.stopp: ", self.stopp)
+        print("self.stopp: ", self.stopp)
 
         return self.stopp
 
     def debug_position(self):
-        print ("debug_position")
+        print("debug_position")
         color = source.Globals.colors.frame_color
         font = pygame.font.SysFont(None, 18)
         win = self.parent.win
@@ -225,16 +220,16 @@ class Navigation_old:
         # center
         center_x = pygame.display.get_surface().get_width() / 2
         center_y = pygame.display.get_surface().get_height() / 2
-        pygame.draw.circle (source.Globals.win, source.Globals.colors.frame_color, (pygame.display.get_surface().get_width()/2, pygame.display.get_surface().get_height()/2), 15, 1)
+        pygame.draw.circle(source.Globals.win, source.Globals.colors.frame_color, (
+            pygame.display.get_surface().get_width() / 2, pygame.display.get_surface().get_height() / 2), 15, 1)
 
         text = "x:" + str(int(self.x)) + " / y:" + str(int(self.y))
         drawText(win, text, color, ((center_x, center_y + text_spacing * text_id), (400, 500)), font, "left")
         text_id += 1
 
         text = "position_x:" + str(int(self.position_x)) + " / position_y:" + str(int(self.position_y))
-        drawText(win, text, color,((center_x, center_y + text_spacing * text_id),(400, 500)), font, "left")
+        drawText(win, text, color, ((center_x, center_y + text_spacing * text_id), (400, 500)), font, "left")
         text_id += 1
-
 
         # from mouse to self position
         # pygame.draw.line(source.Globals.win, source.Globals.colors.frame_color, pygame.mouse.get_pos(), (
@@ -242,9 +237,10 @@ class Navigation_old:
 
         # universe
         pygame.draw.rect(source.Globals.win, source.Globals.colors.ui_white,
-            [source.Globals.app.universe.left_end,source.Globals.app.universe.top_end,source.Globals.scene_width, source.Globals.scene_height ], 1)
+            [source.Globals.app.universe.left_end, source.Globals.app.universe.top_end, source.Globals.scene_width,
+             source.Globals.scene_height], 1)
 
-        text = "scene_width: " +  str(source.Globals.scene_width) + " scene_height: " +  str(source.Globals.scene_height)
+        text = "scene_width: " + str(source.Globals.scene_width) + " scene_height: " + str(source.Globals.scene_height)
         drawText(win, text, color, ((center_x, center_y + text_spacing * text_id), (400, 500)), font, "left")
         text_id += 1
 
@@ -253,14 +249,13 @@ class Navigation_old:
         text_id += 1
 
         # navigation
-        drawText(win, "stopp: " + str(self.stopp), color, ((center_x, center_y + text_spacing * text_id), (400, 500)), font, "left")
+        drawText(win, "stopp: " + str(self.stopp), color, (
+            (center_x, center_y + text_spacing * text_id), (400, 500)), font, "left")
         text_id += 1
 
         pygame.draw.rect(source.Globals.win, source.Globals.colors.frame_color,
             [self.left_end, self.top_end,
              self.right_end, self.bottom_end], 1)
-
-
 
     def move_objects(self):
         # if not self.limit_position():
@@ -316,13 +311,12 @@ class Navigation_old:
 
             limit_positions(i)
 
+        print("Visible Objects: ", len([i for i in self.moveables if not i._hidden]))
+        print((self.position_x, self.position_y), pygame.mouse.get_pos())
 
-        print ("Visible Objects: ", len([i for i in self.moveables if not i._hidden]))
-        print ((self.position_x, self.position_y), pygame.mouse.get_pos())
+        # source.Globals.win.blit (source.Globals.app.background_image.surface, (0,0))
 
-        #source.Globals.win.blit (source.Globals.app.background_image.surface, (0,0))
-
-    def navigate_to(self, obj):# not working yet
+    def navigate_to(self, obj):  # not working yet
 
         ship = [i for i in source.Globals.app.ships if i.name == obj][0]
         print("navigate_to: ", ship)
@@ -336,7 +330,6 @@ class Navigation_old:
                     i.set_center()
 
             limit_positions(i)
-
 
 
 class Navigation(WidgetBase):
@@ -354,9 +347,9 @@ class Navigation(WidgetBase):
 
         self.dist_x = None
         self.dist_y = None
-        self.center_x = pygame.display.get_surface().get_width()/2
-        self.center_y = pygame.display.get_surface().get_height()/2
-        self.left = self.parent.universe.left_end + self.center_x *-1
+        self.center_x = pygame.display.get_surface().get_width() / 2
+        self.center_y = pygame.display.get_surface().get_height() / 2
+        self.left = self.parent.universe.left_end + self.center_x * -1
         self.right = self.parent.universe.right_end - self.center_x
         self.top = self.parent.universe.top_end + self.center_y * -1
         self.bottom = self.parent.universe.bottom_end - self.center_y
@@ -370,16 +363,15 @@ class Navigation(WidgetBase):
 
         self.scene_width = kwargs.get("scene_width")
         self.scene_height = kwargs.get("scene_height")
-        self.not_to_draw = ['_isSubWidget', "parent","not_to_draw" ,
-             '_hidden',
-             '_disabled','layers', "layer",'moveables',"win", 'x',
-             'y',
-             '_width',
-             '_height',
-             'property',]
-        self.to_draw = [i for i in self.__dict__.keys() if not i in WidgetBase.__dict__.keys() and not i in self.not_to_draw]
-
-
+        self.not_to_draw = ['_isSubWidget', "parent", "not_to_draw",
+                            '_hidden',
+                            '_disabled', 'layers', "layer", 'moveables', "win", 'x',
+                            'y',
+                            '_width',
+                            '_height',
+                            'property', ]
+        self.to_draw = [i for i in self.__dict__.keys() if
+                        not i in WidgetBase.__dict__.keys() and not i in self.not_to_draw]
 
     def listen(self, events):
         if not navigation:
@@ -403,16 +395,10 @@ class Navigation(WidgetBase):
 
             if event.type == pygame.MOUSEWHEEL:
                 if event.y == -1 or event.y == 1:
-                    self.zoom += event.y/100
+                    self.zoom += event.y / 100
                     self.mouse_wheel = True
             else:
                 self.mouse_wheel = False
-
-
-
-
-
-
 
         # both, then act
         if self.key_pressed and self.mouse_pressed:
@@ -420,7 +406,6 @@ class Navigation(WidgetBase):
             self.show()
         else:
             self.hide()
-
 
         if self.key_pressed and self.mouse_wheel:
             self.calculate()
@@ -430,8 +415,8 @@ class Navigation(WidgetBase):
 
     def calculate(self):
         # screen center
-        self.center_x = pygame.display.get_surface().get_width()/2
-        self.center_y = pygame.display.get_surface().get_height()/2
+        self.center_x = pygame.display.get_surface().get_width() / 2
+        self.center_y = pygame.display.get_surface().get_height() / 2
         # mouse position
         self.mp = pygame.mouse.get_pos()
 
@@ -467,7 +452,7 @@ class Navigation(WidgetBase):
         # elif self.dist_y < 0:
         #     self.drag()
         self.drag()
-        #self.debug()
+        # self.debug()
 
     def drag(self):
         # set scene position
@@ -475,14 +460,12 @@ class Navigation(WidgetBase):
         self.scene_y -= self.y - self.dist_y / self.acceleration
         self.drag_objects()
 
-
     def drag_objects(self):
         # # set new position of objects
         for i in self.moveables:
-
-                i.setX(i.getX() - (self.dist_x / self.acceleration ))
-                i.setY(i.getY() - (self.dist_y  / self.acceleration ))
-                limit_positions(i)
+            i.setX(i.getX() - (self.dist_x / self.acceleration))
+            i.setY(i.getY() - (self.dist_y / self.acceleration))
+            limit_positions(i)
 
     def draw_grid(self):
         width = pygame.display.get_surface().get_width()
@@ -490,15 +473,15 @@ class Navigation(WidgetBase):
 
         for x in range(width):
             if str(x).endswith("00"):
-                pygame.draw.line(self.win, source.Globals.colors.frame_color,(x,0),(x,height),)
-                
+                pygame.draw.line(self.win, source.Globals.colors.frame_color, (x, 0), (x, height), )
+
     def draw(self):
         if not self._hidden and navigation:
             # center
             self.center_x = pygame.display.get_surface().get_width() / 2
             self.center_y = pygame.display.get_surface().get_height() / 2
             pygame.draw.circle(source.Globals.win, source.Globals.colors.frame_color, (
-            pygame.display.get_surface().get_width() / 2, pygame.display.get_surface().get_height() / 2), 15, 1)
+                pygame.display.get_surface().get_width() / 2, pygame.display.get_surface().get_height() / 2), 15, 1)
 
             color = source.Globals.colors.frame_color
             font = pygame.font.SysFont(None, 18)
@@ -507,20 +490,18 @@ class Navigation(WidgetBase):
             text_id = 1
 
             for i in self.to_draw:
-                text = str(i) + ": " + str(getattr(self,  i))
-                drawText(win, text, color, ((self.center_x, self.center_y + text_spacing * text_id), (400, 500)), font, "left")
+                text = str(i) + ": " + str(getattr(self, i))
+                drawText(win, text, color, (
+                    (self.center_x, self.center_y + text_spacing * text_id), (400, 500)), font, "left")
                 text_id += 1
-
 
             pygame.draw.circle(source.Globals.win, source.Globals.colors.frame_color, (
                 (self.getX(), self.getY())), 15, 1)
 
-            #self.draw_grid()
+            # self.draw_grid()
 
     def navigate_to(self, obj):
-        print ("not implemented yet")
+        print("not implemented yet")
+
     def debug(self):
         pprint(self.__dict__)
-
-
-

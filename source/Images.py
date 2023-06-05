@@ -26,4 +26,5 @@ def load_folders(folder, dict):
                 img.convert_alpha()
                 dict[folder][sub][image] = img  #
 
+
 load_folders(os.path.join(pictures_path), images)

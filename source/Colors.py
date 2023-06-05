@@ -12,11 +12,11 @@ class Colors:
         self.border_color = pygame.color.THECOLORS["purple"]
         self.hoverBorderColour = pygame.color.THECOLORS["brown"]
         self.pressedBorderColour = pygame.color.THECOLORS["grey"]
-        self.frame_color = (120, 204, 226)#"#78cce2" #"#4E7988"  #("#38BFC6")# pygame.colordict.THECOLORS["darkslategray1"]"#d3f8ff"
+        self.frame_color = (
+        120, 204, 226)  # "#78cce2" #"#4E7988"  #("#38BFC6")# pygame.colordict.THECOLORS["darkslategray1"]"#d3f8ff"
         self.background_color = pygame.colordict.THECOLORS["black"]
-        self.ui_white = (238, 253, 254)#"#eefdfe"
-        self.ui_dark = (55, 130, 157)#"#37829d"
-
+        self.ui_white = (238, 253, 254)  # "#eefdfe"
+        self.ui_dark = (55, 130, 157)  # "#37829d"
 
 # class Colors:
 #     def __init__(self):

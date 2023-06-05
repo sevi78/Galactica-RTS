@@ -111,24 +111,25 @@ prices = {
         "minerals": 50
         },
     }
-build_population_minimum = {     'solar panel': 0,
-                                 'wind mill': 1000,
-                                 'power plant': 10000,
-                                 'spring': 0,
-                                 'water treatment': 1000,
-                                 'terra former': 10000,
-                                 'farm': 0,
-                                 'ranch': 1000,
-                                 'agriculture complex': 10000,
-                                 'mine': 0,
-                                 'open pit': 1000,
-                                 'mineral complex': 10000,
-                                 'town': 0,
-                                 'city': 0,
-                                 'metropole': 0,
-                                 'university': 0,
-                                 'space harbor': 1000,
-                                 'particle accelerator': 10000}
+build_population_minimum = {'solar panel': 0,
+                            'wind mill': 1000,
+                            'power plant': 10000,
+                            'spring': 0,
+                            'water treatment': 1000,
+                            'terra former': 10000,
+                            'farm': 0,
+                            'ranch': 1000,
+                            'agriculture complex': 10000,
+                            'mine': 0,
+                            'open pit': 1000,
+                            'mineral complex': 10000,
+                            'town': 0,
+                            'city': 0,
+                            'metropole': 0,
+                            'university': 0,
+                            'space harbor': 1000,
+                            'particle accelerator': 10000
+                            }
 building_production_time_scale = 5
 
 building_production_time = {
@@ -362,8 +363,6 @@ load_settings()
 # print (build_restrictions_population)
 
 
-
-
 def create_info_panel_building_text():
     building_panel_info_text = {}
     text = ""
@@ -375,17 +374,12 @@ def create_info_panel_building_text():
             text += resource + ": " + str(value) + "\n"
         text += "\n" + "production: " + "\n"
         text += "\n"
-        for r ,v in production[building].items():
+        for r, v in production[building].items():
             text += r + ": " + str(v) + "\n"
 
         building_panel_info_text[building] = text
 
     return building_panel_info_text
-
-
-
-
-
 
 
 # building_text = {}
@@ -414,10 +408,7 @@ planet_positions = {
     'Zeta Bentauri': (1495, 121),
     'zork': (1132, 122),
     'Sun': (925, 458),
-    "asteroids":(123,321)
+    "asteroids": (123, 321)
     }
 
-
 population_grow_factor = 0.1
-
-

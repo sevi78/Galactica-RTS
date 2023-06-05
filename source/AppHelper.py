@@ -2,7 +2,10 @@ import math
 import sys
 
 import pygame
-from source.__init__ import production, planet_positions
+
+import source
+
+from source.__init__ import production, planet_positions, drawText
 
 
 class UIHelper:
@@ -25,10 +28,10 @@ class UIHelper:
         self.spacing = 10
 
     def set_anchor_right(self, value):
-        self.anchor_right  = self.width - value
+        self.anchor_right = self.width - value
 
     def set_anchor_bottom(self, value):
-        self.anchor_bottom  = self.height - value
+        self.anchor_bottom = self.height - value
 
     def set_spacing(self, spacing):
         self.spacing = spacing
@@ -44,9 +47,9 @@ class UIHelper:
         win_width = win.get_width()
         win_height = win.get_height()
 
-        x = win_width/2 - width/2
-        y = win_height/2 - height/2
-        pos = (x,y)
+        x = win_width / 2 - width / 2
+        y = win_height / 2 - height / 2
+        pos = (x, y)
         return pos
 
     def update(self):
@@ -65,7 +68,7 @@ class UIHelper:
         # print (self.width, self.height)
         # print ("UIHelper: anchor_right:  ", self.anchor_right)
 
-    def hms(self, seconds):#no use
+    def hms(self, seconds):  # no use
         """
         time converter
         :param seconds:
@@ -115,7 +118,7 @@ class AppHelper:
                     pygame.display.set_mode(size, pygame.RESIZABLE)
 
     def clear_widgets(self, events):
-        #print ("clear_widgets: not implemented")
+        # print ("clear_widgets: not implemented")
         return
         # kaputt
         """ deletes all WidgetHandler.WidgetHandler.getWidgets(), (Buttons from 'Button' class """
@@ -125,7 +128,7 @@ class AppHelper:
                     print("clear widgets", event.key)
 
                     # get all widgets
-                    widgets =WidgetHandler.WidgetHandler.getWidgets()
+                    widgets = WidgetHandler.WidgetHandler.getWidgets()
 
                     # why the f..k we need to repeat the delete process???
                     while len(widgets) > 0:
@@ -214,7 +217,7 @@ class AppHelper:
         if planet:
             self.selected_planet = planet
             self.info_panel.update(self.events)
-            self.building_panel.update()
+
 
     def update_icons(self, events):
         for icon in self.icons:
@@ -235,8 +238,8 @@ class AppHelper:
             "food": 0,
             "minerals": 0,
             "water": 0,
-            "technology":0,
-            "city":0
+            "technology": 0,
+            "city": 0
             }
 
         self.population_limit = 0
@@ -264,21 +267,19 @@ class AppHelper:
         :return:
         """
         for i in self.planets:
-
             planet_positions[i.name] = (i.getX(), i.getY())
 
     def cheat(self, events):
         """cheat you bloody cheater :) """
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if event.key == 99:# C
+                if event.key == 99:  # C
                     self.player.energy += 1000
                     self.player.food += 1000
                     self.player.minerals += 1000
                     self.player.water += 1000
                     if self.ship:
                         self.ship.energy = 10000
-
 
                     self.player.population += 250
                     for i in self.planets:
@@ -290,9 +291,9 @@ class AppHelper:
                     #         print (get_distance(self.ship.pos, (i.getX(), i.getY())))
                     #     # self.get_planet_positions()
                     for p in self.planets:
-                         p.explored = True
+                        p.explored = True
 
-    def draw_fog_of_war(self,obj,**kwargs):
+    def draw_fog_of_war(self, obj, **kwargs):
         """
         draws the fog of war circle based on the fog of war raduis of the obj
         :param obj:
@@ -307,6 +308,7 @@ class AppHelper:
         # if hasattr(self, "fog_of_war"):
         #     pygame.draw.circle(surface=self.fog_of_war, color=(60, 60, 60), center=(
         #      x, y), radius=radius, width=0)
+
 
 def get_distance(pos_a, pos_b):
     """
@@ -326,7 +328,11 @@ def get_distance(pos_a, pos_b):
 
     return distance
 
+
 def limit_positions(obj):
+    """
+    this hides the obj if it is outside the screen
+    """
     win = pygame.display.get_surface()
     test = 100
     zero = 0
@@ -338,10 +344,23 @@ def limit_positions(obj):
     # if obj.type == "star" and not obj._hidden and x in range(-10, 10):
     #     print ("x, y, obj.getWidth(), obj._hidden", x, y, obj.getWidth(), obj._hidden)
     if not hasattr(obj, "crew"):
-        if x <= zero or x >= win_width :
+        if x <= zero or x >= win_width:
             obj.hide()
         elif y <= zero or y >= win_height:
             obj.hide()
         else:
             obj.show()
 
+
+def debug_positions(x, y, color, text, size, **kwargs):
+    if not source.debug:
+        return
+    # color = kwargs.get("color", "red")
+    # x,y = kwargs.get("x"), kwargs.get("y")
+    # size = kwargs.get("size")
+    text = text + str(int(x)) + ", " + str(int(y))
+    text_spacing = 15
+
+    pygame.draw.circle(source.win, color, (x, y), size, 1)
+    font = pygame.font.SysFont(None, 18)
+    drawText(source.win, text, color, (x, y, 400, 30), font, "left")

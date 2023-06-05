@@ -1,4 +1,3 @@
-
 """
 pygame-menu
 https://github.com/ppizarror/pygame-menu
@@ -26,8 +25,8 @@ def main(test: bool = False, **kwargs) -> None:
     # -------------------------------------------------------------------------
     # Create window
     # -------------------------------------------------------------------------
-    surface =  source.Globals.win#create_example_window('Galactica - Settings', WINDOW_SIZE,init_pygame=False)#kwargs.get("surface") #
-    #clock = pygame.time.Clock()
+    surface = source.Globals.win  # create_example_window('Galactica - Settings', WINDOW_SIZE,init_pygame=False)#kwargs.get("surface") #
+    # clock = pygame.time.Clock()
 
     # -------------------------------------------------------------------------
     # Create menus: Settings
@@ -46,29 +45,29 @@ def main(test: bool = False, **kwargs) -> None:
         height=WINDOW_SIZE[1] * 0.85,
         theme=settings_menu_theme,
         title='Settings',
-        width=WINDOW_SIZE[0] * 0.9,)
+        width=WINDOW_SIZE[0] * 0.9, )
 
     settings_menu.add.text_input(
         'TODO: ',
-        default= settings["todo"],
+        default=settings["todo"],
         maxwidth=0,
         textinput_id='todo',
         input_underline='_',
-        align=pygame_menu.locals.ALIGN_CENTER,
+        align=pygame_menu.locals.ALIGN_RIGHT,
         textwrap=True)
 
     settings_menu.add.text_input(
         'FPS: ',
         maxchar=3,
-        default= int(settings["fps"]),
+        default=int(settings["fps"]),
         textinput_id='fps',
         input_underline='_',
-        align = pygame_menu.locals.ALIGN_CENTER)
+        align=pygame_menu.locals.ALIGN_RIGHT)
 
     # Selectable items
     widths = [("1920",),
-             ("1400",),
-             ("800",)]
+              ("1400",),
+              ("800",)]
 
     # Create selector with 3 options
     settings_menu.add.selector(
@@ -76,11 +75,11 @@ def main(test: bool = False, **kwargs) -> None:
         widths,
         selector_id='width',
         default=settings["width"][1],
-        align=pygame_menu.locals.ALIGN_CENTER)
+        align=pygame_menu.locals.ALIGN_RIGHT)
 
     heights = [("1080",),
-              ("800",),
-              ("600",)]
+               ("800",),
+               ("600",)]
 
     # Create selector with 3 options
     settings_menu.add.selector(
@@ -88,7 +87,7 @@ def main(test: bool = False, **kwargs) -> None:
         heights,
         selector_id='height',
         default=settings["height"][1],
-        align=pygame_menu.locals.ALIGN_CENTER)
+        align=pygame_menu.locals.ALIGN_RIGHT)
 
     # scene size
     settings_menu.add.text_input(
@@ -98,7 +97,7 @@ def main(test: bool = False, **kwargs) -> None:
         textinput_id='scene_width',
         input_underline='_',
         input_type=pygame_menu.locals.INPUT_INT,
-        align=pygame_menu.locals.ALIGN_CENTER)
+        align=pygame_menu.locals.ALIGN_RIGHT)
 
     settings_menu.add.text_input(
         'scene height: ',
@@ -107,12 +106,13 @@ def main(test: bool = False, **kwargs) -> None:
         textinput_id='scene_height',
         input_underline='_',
         input_type=pygame_menu.locals.INPUT_INT,
-        align=pygame_menu.locals.ALIGN_CENTER)
+        align=pygame_menu.locals.ALIGN_RIGHT)
 
-    settings_menu.add.range_slider('Universe Density:(lower value = less stars)', settings["universe_density"], (1, 100), 10,
+    settings_menu.add.range_slider('Universe Density:(lower value = less stars)',
+        settings["universe_density"], (1, 100), 10,
         rangeslider_id='universe_density',
         value_format=lambda x: str(int(x)),
-        align = pygame_menu.locals.ALIGN_CENTER)
+        align=pygame_menu.locals.ALIGN_RIGHT)
 
     # layers =[('0',[0] ),
     #            ('1'[1],),
@@ -124,40 +124,40 @@ def main(test: bool = False, **kwargs) -> None:
     #            ('7',[7]),
     #            ('8', [8]),
     #            ('9',[9])]
-    layers = [("0", 1),("1", 0)]
+    layers = [("0", 1), ("1", 0)]
     default = settings["visible_layers"][1]
     settings_menu.add.dropselect_multiple(
         title='visible layers: not working yet',
         items=layers,
-        default= settings["visible_layers"][1],
+        default=settings["visible_layers"][1],
         dropselect_multiple_id='visible_layers',
         max_selected=2,
         open_middle=True,
         selection_box_height=2,
-        align=pygame_menu.locals.ALIGN_CENTER)
+        align=pygame_menu.locals.ALIGN_RIGHT)
 
     # Create switch
     settings_menu.add.toggle_switch('draw Background Image: ', settings["draw_background_image"],
-        toggleswitch_id='draw_background_image', align = pygame_menu.locals.ALIGN_CENTER)
+        toggleswitch_id='draw_background_image', align=pygame_menu.locals.ALIGN_RIGHT)
 
     settings_menu.add.toggle_switch('Navigation', settings["navigation"],
-                                    toggleswitch_id='navigation', align = pygame_menu.locals.ALIGN_CENTER)
+        toggleswitch_id='navigation', align=pygame_menu.locals.ALIGN_RIGHT)
 
     settings_menu.add.toggle_switch('Moveable', settings["moveable"],
-                                    toggleswitch_id='moveable', align = pygame_menu.locals.ALIGN_CENTER,
-                                    )
+        toggleswitch_id='moveable', align=pygame_menu.locals.ALIGN_RIGHT,
+        )
 
     settings_menu.add.toggle_switch('Zoom', settings["enable_zoom"],
-        toggleswitch_id='enable_zoom', align=pygame_menu.locals.ALIGN_CENTER,
+        toggleswitch_id='enable_zoom', align=pygame_menu.locals.ALIGN_RIGHT,
         )
 
     settings_menu.add.range_slider('Game Speed:', settings["game_speed"], (1, 25), 1,
-                                    rangeslider_id='game_speed',
-                                    value_format=lambda x: str(int(x)), align = pygame_menu.locals.ALIGN_CENTER)
+        rangeslider_id='game_speed',
+        value_format=lambda x: str(int(x)), align=pygame_menu.locals.ALIGN_RIGHT)
 
     settings_menu.add.range_slider('Time Factor:', settings["time_factor"], (1, 10), 1,
         rangeslider_id='time_factor',
-        value_format=lambda x: str(int(x)), align = pygame_menu.locals.ALIGN_CENTER)
+        value_format=lambda x: str(int(x)), align=pygame_menu.locals.ALIGN_RIGHT)
 
     def data_fun() -> None:
         """
@@ -174,11 +174,11 @@ def main(test: bool = False, **kwargs) -> None:
 
     # Add final buttons
 
-    settings_menu.add.vertical_fill(30,"vf")
+    settings_menu.add.vertical_fill(30, "vf")
     settings_menu.add.button('Store data', data_fun, button_id='store')  # Call function
     settings_menu.add.button('Restore original values', settings_menu.reset_value)
     settings_menu.add.button('Return to main menu', pygame_menu.events.BACK,
-                             align=pygame_menu.locals.ALIGN_LEFT)
+        align=pygame_menu.locals.ALIGN_LEFT)
 
     # -------------------------------------------------------------------------
     # Create menus: Main menu
@@ -189,12 +189,12 @@ def main(test: bool = False, **kwargs) -> None:
     main_menu_theme.widget_font_size = 30
 
     main_menu = pygame_menu.Menu(
-        height=WINDOW_SIZE[1] ,
+        height=WINDOW_SIZE[1],
         onclose=pygame_menu.events.BACK,  # User press ESC button
         theme=main_menu_theme,
         title='Main menu',
         width=WINDOW_SIZE[0]
-    )
+        )
 
     main_menu.add.button('Settings', settings_menu)
 

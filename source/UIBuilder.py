@@ -19,12 +19,14 @@ from source.Levels import level_dict
 from source.Navigation import Navigation
 from source.Planet import Planet
 from source.Player import Player
-from source.Ship import Spaceship, Spacehunter, Cargoloader
+from source.Ship import Ship
+from source.Ships import *
 from source.ToolTip import ToolTip
 from source.UniverseBackground import Universe
 from source.config import planet_positions, prices, production
 from source.texts import planet_texts
 from source.paning_and_zooming import PanZoomHandler
+
 
 class SceneParams:
     def __init__(self):
@@ -71,6 +73,7 @@ class SceneParams:
         self.prices = prices
         self.production = production
 
+
 class SceneBuilder(SceneParams):
     def __init__(self, width, height):
         """
@@ -113,21 +116,19 @@ class SceneBuilder(SceneParams):
         self.create_ship("spacehunter_30x30.png", center_x + spacing, center_y + 300)
 
     def create_fog_of_war(self):
-        self.fog_of_war = FogOfWar(source.Globals.win,0,0,source.Globals.scene_width, source.Globals.scene_height, False, layer=2)
+        self.fog_of_war = FogOfWar(source.Globals.win, 0, 0, source.Globals.scene_width, source.Globals.scene_height, False, layer=2)
 
     def create_background(self):
-        self.background_image = BackgroundImage(    source.Globals.win,
-                                                    x=0,
-                                                    y=0,
-                                                    width=WIDTH,
-                                                    height=HEIGHT,
-                                                    isSubWidget=False,
-                                                    image= source.Images.images[pictures_path]["textures"]["bg.png"].convert(),
-                                                    layer = 0, property= "background" )
+        self.background_image = BackgroundImage(source.Globals.win,
+            x=0,
+            y=0,
+            width=WIDTH,
+            height=HEIGHT,
+            isSubWidget=False,
+            image=source.Images.images[pictures_path]["textures"]["bg.png"].convert(),
+            layer=0, property="background")
 
-
-        self.universe = Universe(source.Globals.win,0, 0, source.Globals.scene_width, source.Globals.scene_height, isSubWidget=False, layer= 3)
-
+        self.universe = Universe(source.Globals.win, 0, 0, source.Globals.scene_width, source.Globals.scene_height, isSubWidget=False, layer=3)
 
     def create_ship(self, name, x, y):
         """ creates a ship from the image name like: schiff1_30x30"""
@@ -136,57 +137,57 @@ class SceneBuilder(SceneParams):
         class_ = name[0].upper() + name[1:]
 
         if class_ == "Spaceship":
-            ship = Spaceship(  source.Globals.win, x=x, y=y, width=size_x, height=size_y,
-                            image=source.Globals.images[pictures_path]["ships"][name + "_30x30.png"],
+            ship = Spaceship(source.Globals.win, x=x, y=y, width=size_x, height=size_y,
+                image=source.Globals.images[pictures_path]["ships"][name + "_30x30.png"],
 
-                            textColour=source.Globals.colors.frame_color,
-                            moveable=False,
-                            wait=  1.0,
-                            name= name,
-                            parent=self,
-                            ui_parent = None,#self.background,
-                            tooltip="this is your spaceship: " + name,
-                            textVAlign="over_the_top",
-                            selection_image=source.Globals.images[pictures_path]["icons"]["selection_150x150.png"],
-                            layer = 8)
+                textColour=source.Globals.colors.frame_color,
+                moveable=False,
+                wait=1.0,
+                name=name,
+                parent=self,
+                ui_parent=None,  # self.background,
+                tooltip="this is your spaceship: " + name,
+                textVAlign="over_the_top",
+                selection_image=source.Globals.images[pictures_path]["icons"]["selection_150x150.png"],
+                layer=8)
 
             self.ships.append(ship)
 
         if class_ == "Spacehunter":
-            ship = Spacehunter(  source.Globals.win, x=x, y=y, width=size_x, height=size_y,
-                            image =source.Globals.images[pictures_path]["ships"][name + "_30x30.png"],
+            ship = Spacehunter(source.Globals.win, x=x, y=y, width=size_x, height=size_y,
+                image=source.Globals.images[pictures_path]["ships"][name + "_30x30.png"],
 
-                            textColour =source.Globals.colors.frame_color,
-                            moveable=False,
-                            wait=  1.0,
-                            name= name,
-                            parent=self,
-                            ui_parent=None,#self.background,
-                            tooltip="this is your spaceship: " + name,
-                            textVAlign="over_the_top",
-                            selection_image =source.Globals.images[pictures_path]["icons"]["selection_150x150.png"],
-                            layer = 8)
+                textColour=source.Globals.colors.frame_color,
+                moveable=False,
+                wait=1.0,
+                name=name,
+                parent=self,
+                ui_parent=None,  # self.background,
+                tooltip="this is your spaceship: " + name,
+                textVAlign="over_the_top",
+                selection_image=source.Globals.images[pictures_path]["icons"]["selection_150x150.png"],
+                layer=8)
 
             self.ships.append(ship)
 
         if class_ == "Cargoloader":
-            ship = Cargoloader(  source.Globals.win, x=x, y=y, width=size_x+20, height=size_y+20,
-                            image =source.Globals.images[pictures_path]["ships"][name + "_30x30.png"],
+            ship = Cargoloader(source.Globals.win, x=x, y=y, width=size_x + 20, height=size_y + 20,
+                image=source.Globals.images[pictures_path]["ships"][name + "_30x30.png"],
 
-                            textColour =source.Globals.colors.frame_color,
-                            moveable=False,
-                            wait=  1.0,
-                            name= name,
-                            parent=self,
-                            ui_parent=None,#self.background,
-                            tooltip="this is your spaceship: " + name,
-                            textVAlign="over_the_top",
-                            selection_image =source.Globals.images[pictures_path]["icons"]["selection_150x150.png"],
-                            layer = 8)
+                textColour=source.Globals.colors.frame_color,
+                moveable=False,
+                wait=1.0,
+                name=name,
+                parent=self,
+                ui_parent=None,  # self.background,
+                tooltip="this is your spaceship: " + name,
+                textVAlign="over_the_top",
+                selection_image=source.Globals.images[pictures_path]["icons"]["selection_150x150.png"],
+                layer=8)
 
             self.ships.append(ship)
 
-    def create_planets_old(self,level):
+    def create_planets_old(self, level):
         """
         creates the ppanets based on the level from Lovels (level_dict)
         :param level:
@@ -195,44 +196,43 @@ class SceneBuilder(SceneParams):
         for planetname, planetparams in level_dict[level].items():
             # print (planetname,planetparams)
             width = int(planetparams["image_name"].split("_")[1].split("x")[0])
-            height =int(planetparams["image_name"].split("_")[1].split("x")[1].split(".png")[0])
-
+            height = int(planetparams["image_name"].split("_")[1].split("x")[1].split(".png")[0])
 
             # dirty hack to fix the position
             planetparams["x"] = planet_positions[planetname][0]
             planetparams["y"] = planet_positions[planetname][1]
             planetparams["position"] = planet_positions[planetname]
 
-            planet_button = Planet( win=source.Globals.win,
-                                    x=int(planetparams["x"]),
-                                    y=int(planetparams["y"]),
-                                    width=width,
-                                    height=height,
-                                    isSubWidget=False,
-                                    image=source.Globals.images[pictures_path]["planets"][planetparams["image_name"]],
-                                    transparent=True,
+            planet_button = Planet(win=source.Globals.win,
+                x=int(planetparams["x"]),
+                y=int(planetparams["y"]),
+                width=width,
+                height=height,
+                isSubWidget=False,
+                image=source.Globals.images[pictures_path]["planets"][planetparams["image_name"]],
+                transparent=True,
 
-                                    info_text=planet_texts[planetparams["name"]],
-                                    text=planetparams["name"],
-                                    textColour=source.Globals.colors.frame_color,
-                                    property="planet",
-                                    name=planetparams["name"],
-                                    parent= self,
-                                    tooltip="send your ship to explore the planet!",
-                                    possible_resources = planetparams["possible_resources"],
-                                    moveable=moveable,
-                                    hover_image = source.Globals.images[pictures_path]["icons"]["selection_150x150.png"],
-                                    textVAlign= "below_the_bottom",
-                                    layer = 3)
+                info_text=planet_texts[planetparams["name"]],
+                text=planetparams["name"],
+                textColour=source.Globals.colors.frame_color,
+                property="planet",
+                name=planetparams["name"],
+                parent=self,
+                tooltip="send your ship to explore the planet!",
+                possible_resources=planetparams["possible_resources"],
+                moveable=moveable,
+                hover_image=source.Globals.images[pictures_path]["icons"]["selection_150x150.png"],
+                textVAlign="below_the_bottom",
+                layer=3)
             self.planet_buttons.append(planet_button)
 
         # set orbit_object
-        sun =  [i for i in self.planets if i.name == "Sun"][0]
+        sun = [i for i in self.planets if i.name == "Sun"][0]
         for i in self.planets:
             if not i == sun:
                 i.set_orbit_object(sun)
 
-    def create_planets(self,level):
+    def create_planets(self, level):
         """
         creates the ppanets based on the level from Lovels (level_dict)
         :param level:
@@ -280,46 +280,47 @@ class SceneBuilder(SceneParams):
             if not i == sun:
                 i.set_orbit_object(sun)
 
-    def create_artefacts(self): #self not working yet
+    def create_artefacts(self):  # self not working yet
         w = WIDTH
         h = HEIGHT
         buffer = 100
         image = source.Globals.images[pictures_path]["artefacts"]["artefact1_60x31.png"]
-        artefact = CollectableItem( source.Globals.win,
-                                    random.randint(buffer,WIDTH-buffer), random.randint(buffer, HEIGHT-buffer),50,50,
-                                    isSubWidget=False,
-                                    image=image,
-                                    layer = 4,
-                                    transparent=True,
-                                    tooltip="...maybe an alien artefact ? ...we don't now what it is ! it might be dangerous --- but maybe useful !?",
-                                    moveable=True,
+        artefact = CollectableItem(source.Globals.win,
+            random.randint(buffer, WIDTH - buffer), random.randint(buffer, HEIGHT - buffer), 50, 50,
+            isSubWidget=False,
+            image=image,
+            layer=4,
+            transparent=True,
+            tooltip="...maybe an alien artefact ? ...we don't now what it is ! it might be dangerous --- but maybe useful !?",
+            moveable=True,
 
+            energy=100,
+            minerals=1000,
+            parent=self, )
 
-                                    energy = 100,
-                                    minerals = 1000,
-                                    parent = self,)
 
 class UIBuilder(SceneBuilder):
     """this creates all UI Elements:
     use SceneBuilder for Scene Elements like ships planets ect
 
     it also starts the game loop"""
-    def __init__(self,width, height):
-        #self.main_menu = main()
+
+    def __init__(self, width, height):
+        # self.main_menu = main()
 
         SceneBuilder.__init__(self, width, height)
-        if enable_zoom:
-            self.pan_zoom_handler = PanZoomHandler(
-                source.Globals.win, source.Globals.WIDTH,source.Globals.HEIGHT,source.Globals.scene_width,
-                source.Globals.scene_height, parent = self)
 
-        #self.building_editor = BuildingEditor()
+        self.pan_zoom_handler = PanZoomHandler(
+            source.Globals.win, source.Globals.WIDTH, source.Globals.HEIGHT, source.Globals.scene_width,
+            source.Globals.scene_height, parent=self)
+
+        # self.building_editor = BuildingEditor()
         self.clock = pygame.time.Clock()
-        self.navigation = Navigation(source.Globals.win,0,0, width, height, isSubWidget=False, scene_width= source.Globals.scene_width,scene_height =  source.Globals.scene_height,
-            parent= self, layer=10 )
+        self.navigation = Navigation(source.Globals.win, 0, 0, width, height, isSubWidget=False, scene_width=source.Globals.scene_width, scene_height=source.Globals.scene_height,
+            parent=self, layer=10)
         self.ui_helper = UIHelper(self)
         self.win = source.Globals.win
-        #self.box_selection = SelectionRect(self.win, pygame.mouse.get_pos())
+        # self.box_selection = SelectionRect(self.win, pygame.mouse.get_pos())
 
         # set args
         self.width = width
@@ -354,7 +355,7 @@ class UIBuilder(SceneBuilder):
         self.create_tooltip()
 
         # Info_panel
-        self.info_panel = InfoPanel(self.win, x=0, y=10, width=200, height=300, isSubWidget=False, parent=self, layer = 9)
+        self.info_panel = InfoPanel(self.win, x=0, y=10, width=200, height=300, isSubWidget=False, parent=self, layer=9)
 
         # icons
         self.create_icons()
@@ -445,99 +446,96 @@ class UIBuilder(SceneBuilder):
         pos_y = 15
 
         water_icon = Icon(win=self.win,
-                          x=pos_x,
-                          y=pos_y,
-                          width=25,
-                          height=25,
-                          isSubWidget=False,
-                          parent=self,
-                          image=source.Globals.images[pictures_path]["resources"][ "water_25x25.png"],
-                          key="water",
-                          tooltip="water is good to drink and for washing aswell",
-                          frame_color=source.Globals.colors.frame_color,
-                          moveable=False,
-                          include_text = True,
-                          layer = 9)
+            x=pos_x,
+            y=pos_y,
+            width=25,
+            height=25,
+            isSubWidget=False,
+            parent=self,
+            image=source.Globals.images[pictures_path]["resources"]["water_25x25.png"],
+            key="water",
+            tooltip="water is good to drink and for washing aswell",
+            frame_color=source.Globals.colors.frame_color,
+            moveable=False,
+            include_text=True,
+            layer=9)
         pos_x += spacing
 
         energy_icon = Icon(win=self.win,
-                           x=pos_x,
-                           y=pos_y,
-                           width=25,
-                           height=25,
-                           isSubWidget=False,
-                           parent=self,
-                           image=source.Globals.images[pictures_path]["resources"]["energy_25x25.png"],
-                           key="energy",
-                           tooltip="energy is needed for almost everything",
-                           frame_color=source.Globals.colors.frame_color,
-                           moveable=False,
-                           include_text = True,layer = 9)
+            x=pos_x,
+            y=pos_y,
+            width=25,
+            height=25,
+            isSubWidget=False,
+            parent=self,
+            image=source.Globals.images[pictures_path]["resources"]["energy_25x25.png"],
+            key="energy",
+            tooltip="energy is needed for almost everything",
+            frame_color=source.Globals.colors.frame_color,
+            moveable=False,
+            include_text=True, layer=9)
         pos_x += spacing
 
         food_icon = Icon(win=self.win,
-                                  x=pos_x,
-                                  y=pos_y,
-                                  width=25,
-                                  height=25,
-                                  isSubWidget=False,
-                                  parent=self,
-                                  image=source.Globals.images[pictures_path]["resources"]["food_25x25.png"],
-                                  key="food",
-                                  tooltip="this is food, you want to eat!!! Don't you?!??",
-                                  frame_color=source.Globals.colors.frame_color,
-                                  moveable=False,
-                                  include_text = True,layer = 9)
+            x=pos_x,
+            y=pos_y,
+            width=25,
+            height=25,
+            isSubWidget=False,
+            parent=self,
+            image=source.Globals.images[pictures_path]["resources"]["food_25x25.png"],
+            key="food",
+            tooltip="this is food, you want to eat!!! Don't you?!??",
+            frame_color=source.Globals.colors.frame_color,
+            moveable=False,
+            include_text=True, layer=9)
         pos_x += spacing
 
-
-
-
         minerals_icon = Icon(win=self.win,
-                             x=pos_x,
-                             y=pos_y,
-                             width=25,
-                             height=25,
-                             isSubWidget=False,
-                             parent=self,
-                             image=source.Globals.images[pictures_path]["resources"]["minerals_25x25.png"],
-                             key="minerals",
-                             tooltip="some of the minerals look really nice in the sun!",
-                             frame_color=source.Globals.colors.frame_color,
-                             moveable=False,
-                             include_text = True,layer = 9)
+            x=pos_x,
+            y=pos_y,
+            width=25,
+            height=25,
+            isSubWidget=False,
+            parent=self,
+            image=source.Globals.images[pictures_path]["resources"]["minerals_25x25.png"],
+            key="minerals",
+            tooltip="some of the minerals look really nice in the sun!",
+            frame_color=source.Globals.colors.frame_color,
+            moveable=False,
+            include_text=True, layer=9)
 
         pos_x += spacing
 
         technology_icon = Icon(win=self.win,
-                            x=pos_x,
-                            y=pos_y,
-                            width=25,
-                            height=25,
-                            isSubWidget=False,
-                            parent=self,
-                            image=source.Globals.images[pictures_path]["resources"]["technology_25x25.png"],
-                            key="technology",
-                            tooltip="technology is bad! but we need some things to build and evolve technology",
-                            frame_color=source.Globals.colors.frame_color,
-                            moveable=False,
-                            include_text=True,layer = 9)
+            x=pos_x,
+            y=pos_y,
+            width=25,
+            height=25,
+            isSubWidget=False,
+            parent=self,
+            image=source.Globals.images[pictures_path]["resources"]["technology_25x25.png"],
+            key="technology",
+            tooltip="technology is bad! but we need some things to build and evolve technology",
+            frame_color=source.Globals.colors.frame_color,
+            moveable=False,
+            include_text=True, layer=9)
 
         pos_x += spacing
 
         city_icon = Icon(win=self.win,
-                            x=pos_x,
-                            y=pos_y,
-                            width=25,
-                            height=25,
-                            isSubWidget=False,
-                            parent=self,
-                            image=source.Globals.images[pictures_path]["resources"]["city_25x25.png"],
-                            key="city",
-                            tooltip="population; produce food and water to make it grow!",
-                            frame_color=source.Globals.colors.frame_color,
-                            moveable=False,
-                            include_text=True,layer = 9)
+            x=pos_x,
+            y=pos_y,
+            width=25,
+            height=25,
+            isSubWidget=False,
+            parent=self,
+            image=source.Globals.images[pictures_path]["resources"]["city_25x25.png"],
+            key="city",
+            tooltip="population; produce food and water to make it grow!",
+            frame_color=source.Globals.colors.frame_color,
+            moveable=False,
+            include_text=True, layer=9)
 
         pos_x = self.width - 130
 
@@ -574,18 +572,18 @@ class UIBuilder(SceneBuilder):
         for colon in colons:
             if colon == "resource":
                 button = Button(win=self.win, x=int(x + start_x + colon_size_x / 2), y=start_y,
-                                width=int(colon_size_x / 2),
-                                height=row_size_y, text=colon + ": ", border_thickness=1,layer = 9)
+                    width=int(colon_size_x / 2),
+                    height=row_size_y, text=colon + ": ", border_thickness=1, layer=9)
             elif colon == "building":
                 button = Button(win=self.win, x=int(x + start_x + colon_size_x), y=start_y, width=int(colon_size_x / 2),
-                                height=row_size_y, text=colon + ": ", border_thickness=1,layer = 9)
+                    height=row_size_y, text=colon + ": ", border_thickness=1, layer=9)
             elif colon == "price":
                 button = Button(win=self.win, x=int(x + start_x + colon_size_x + colon_size_x / 2), y=start_y,
-                                width=colon_size_x, height=row_size_y, text=colon + ": ", border_thickness=1,layer = 9)
+                    width=colon_size_x, height=row_size_y, text=colon + ": ", border_thickness=1, layer=9)
             elif colon == "production":
                 button = Button(win=self.win, x=int(x + start_x + colon_size_x + colon_size_x / 2 + colon_size_x),
-                                y=start_y,
-                                width=colon_size_x, height=row_size_y, text=colon + ": ", border_thickness=1,layer = 9)
+                    y=start_y,
+                    width=colon_size_x, height=row_size_y, text=colon + ": ", border_thickness=1, layer=9)
 
             button.disable()
             self.build_menu_widgets.append(button)
@@ -599,11 +597,11 @@ class UIBuilder(SceneBuilder):
         # resource icons (first colon)
         for r in self.resources:
             colon_name = Button(win=self.win, x=x + colon_size_x / 2, y=y, width=colon_size_x / 2,
-                                height=int(row_size_y),
-                                text=r + ": ",
-                                image=pygame.transform.scale(source.Globals.images[pictures_path]["resources"][r + "_25x25.png"],
-                                                             (50, 50)),
-                                borderThickness=1, imageHAlign="left", textHAlign="right",layer = 9)
+                height=int(row_size_y),
+                text=r + ": ",
+                image=pygame.transform.scale(source.Globals.images[pictures_path]["resources"][r + "_25x25.png"],
+                    (50, 50)),
+                borderThickness=1, imageHAlign="left", textHAlign="right", layer=9)
 
             y += row_size_y
             colon_name.disable()
@@ -621,30 +619,30 @@ class UIBuilder(SceneBuilder):
                 if colon == "building":
                     # print ("build_menu_ ", r, self.buildings[r][0])
                     buildings_array = ButtonArray(win=self.win, x=x, y=y + ry,
-                                                  width=colon_size_x / 2,
-                                                  height=int(row_size_y),
-                                                  shape=(1, 3),
-                                                  border=1,
-                                                  texts=self.buildings[r],
-                                                  images=[source.Globals.images[pictures_path]["buildings"][
-                                                              self.buildings[r][0] + "_25x25.png"],
-                                                          source.Globals.images[pictures_path]["buildings"][
-                                                              self.buildings[r][1] + "_25x25.png"],
-                                                          source.Globals.images[pictures_path]["buildings"][
-                                                              self.buildings[r][2] + "_25x25.png"]],
+                        width=colon_size_x / 2,
+                        height=int(row_size_y),
+                        shape=(1, 3),
+                        border=1,
+                        texts=self.buildings[r],
+                        images=[source.Globals.images[pictures_path]["buildings"][
+                                    self.buildings[r][0] + "_25x25.png"],
+                                source.Globals.images[pictures_path]["buildings"][
+                                    self.buildings[r][1] + "_25x25.png"],
+                                source.Globals.images[pictures_path]["buildings"][
+                                    self.buildings[r][2] + "_25x25.png"]],
 
-                                                  textHAligns=("right", "right", "right"),
-                                                  imageHAligns=("left", "left", "left"),
-                                                  bottomBorder=0,
-                                                  names=[self.buildings[r][0], self.buildings[r][1],
-                                                         self.buildings[r][2]],
-                                                  tooltips=["not set", "not set", "not set"],
-                                                  parents=[self, self, self],
-                                                  propertys=[r, r, r],
-                                                  layers= [9,9,9])
-                                                  # onClicks=[lambda: self.build(self.buildings[r][0]),
-                                                  #           lambda: self.build(self.buildings[r][1]),
-                                                  #           lambda: self.build(self.buildings[r][2])])
+                        textHAligns=("right", "right", "right"),
+                        imageHAligns=("left", "left", "left"),
+                        bottomBorder=0,
+                        names=[self.buildings[r][0], self.buildings[r][1],
+                               self.buildings[r][2]],
+                        tooltips=["not set", "not set", "not set"],
+                        parents=[self, self, self],
+                        propertys=[r, r, r],
+                        layers=[9, 9, 9])
+                    # onClicks=[lambda: self.build(self.buildings[r][0]),
+                    #           lambda: self.build(self.buildings[r][1]),
+                    #           lambda: self.build(self.buildings[r][2])])
                     self.build_menu_widgets.append(buildings_array)
 
                     for button in buildings_array.getButtons():
@@ -664,35 +662,35 @@ class UIBuilder(SceneBuilder):
                             price_colors[3] = price_color_cost
 
                         price_array = ButtonArray(win=self.win, x=x + colon_size_x - colon_size_x / 2, y=y + ry,
-                                                  width=colon_size_x,
-                                                  height=int(row_size_y / 3),
-                                                  shape=(4, 1), border=1,
-                                                  texts=[str(self.prices[i]["water"]),
-                                                         str(self.prices[i]["energy"]),
-                                                         str(self.prices[i]["food"]),
-                                                         str(self.prices[i]["minerals"])],
-                                                  fontSizes=[price_font_size, price_font_size, price_font_size,
-                                                             price_font_size],
+                            width=colon_size_x,
+                            height=int(row_size_y / 3),
+                            shape=(4, 1), border=1,
+                            texts=[str(self.prices[i]["water"]),
+                                   str(self.prices[i]["energy"]),
+                                   str(self.prices[i]["food"]),
+                                   str(self.prices[i]["minerals"])],
+                            fontSizes=[price_font_size, price_font_size, price_font_size,
+                                       price_font_size],
 
-                                                  images=[pygame.transform.scale(
-                                                      source.Globals.images[pictures_path]["resources"]["water" + "_25x25.png"],
-                                                      price_image_size),
-                                                          pygame.transform.scale(
-                                                              source.Globals.images[pictures_path]["resources"][
-                                                                  "energy" + "_25x25.png"], price_image_size),
-                                                          pygame.transform.scale(
-                                                              source.Globals.images[pictures_path]["resources"][
-                                                                  "food" + "_25x25.png"], price_image_size),
-                                                          pygame.transform.scale(
-                                                              source.Globals.images[pictures_path]["resources"][
-                                                                  "minerals" + "_25x25.png"], price_image_size)],
+                            images=[pygame.transform.scale(
+                                source.Globals.images[pictures_path]["resources"]["water" + "_25x25.png"],
+                                price_image_size),
+                                pygame.transform.scale(
+                                    source.Globals.images[pictures_path]["resources"][
+                                        "energy" + "_25x25.png"], price_image_size),
+                                pygame.transform.scale(
+                                    source.Globals.images[pictures_path]["resources"][
+                                        "food" + "_25x25.png"], price_image_size),
+                                pygame.transform.scale(
+                                    source.Globals.images[pictures_path]["resources"][
+                                        "minerals" + "_25x25.png"], price_image_size)],
 
-                                                  onClicks=(lambda: print(1), lambda: print(2), lambda: print(3),
-                                                            lambda: print(4)),
+                            onClicks=(lambda: print(1), lambda: print(2), lambda: print(3),
+                                      lambda: print(4)),
 
-                                                  imageHAligns=("left", "left", "left", "left"),
-                                                  textColours=price_colors,
-                                                  layers= [9,9,9,9])
+                            imageHAligns=("left", "left", "left", "left"),
+                            textColours=price_colors,
+                            layers=[9, 9, 9, 9])
 
                         self.build_menu_widgets.append(price_array)
                         for pb in price_array.getButtons():  pb.disable()
@@ -721,36 +719,35 @@ class UIBuilder(SceneBuilder):
                             price_colors[3] = price_color_cost
 
                         production_array = ButtonArray(win=self.win,
-                                                       x=x + colon_size_x + colon_size_x - colon_size_x / 2, y=y + ry,
-                                                       width=colon_size_x,
-                                                       height=int(row_size_y / 3),
-                                                       shape=(4, 1), border=1,
-                                                       texts=[str(self.production[i]["water"]),
-                                                              str(self.production[i]["energy"]),
-                                                              str(self.production[i]["food"]),
-                                                              str(self.production[i]["minerals"])],
-                                                       fontSizes=[price_font_size, price_font_size, price_font_size,
-                                                                  price_font_size],
+                            x=x + colon_size_x + colon_size_x - colon_size_x / 2, y=y + ry,
+                            width=colon_size_x,
+                            height=int(row_size_y / 3),
+                            shape=(4, 1), border=1,
+                            texts=[str(self.production[i]["water"]),
+                                   str(self.production[i]["energy"]),
+                                   str(self.production[i]["food"]),
+                                   str(self.production[i]["minerals"])],
+                            fontSizes=[price_font_size, price_font_size, price_font_size,
+                                       price_font_size],
 
-                                                       images=[pygame.transform.scale(
-                                                           source.Globals.images[pictures_path]["resources"][
-                                                               "water" + "_25x25.png"], price_image_size),
-                                                               pygame.transform.scale(
-                                                                   source.Globals.images[pictures_path]["resources"][
-                                                                       "energy" + "_25x25.png"], price_image_size),
-                                                               pygame.transform.scale(
-                                                                   source.Globals.images[pictures_path]["resources"][
-                                                                       "food" + "_25x25.png"], price_image_size),
-                                                               pygame.transform.scale(
-                                                                   source.Globals.images[pictures_path]["resources"][
-                                                                       "minerals" + "_25x25.png"], price_image_size)],
-                                                       onClicks=(lambda: print(1), lambda: print(2), lambda: print(3),
-                                                                 lambda: print(4)),
+                            images=[pygame.transform.scale(
+                                source.Globals.images[pictures_path]["resources"][
+                                    "water" + "_25x25.png"], price_image_size),
+                                pygame.transform.scale(
+                                    source.Globals.images[pictures_path]["resources"][
+                                        "energy" + "_25x25.png"], price_image_size),
+                                pygame.transform.scale(
+                                    source.Globals.images[pictures_path]["resources"][
+                                        "food" + "_25x25.png"], price_image_size),
+                                pygame.transform.scale(
+                                    source.Globals.images[pictures_path]["resources"][
+                                        "minerals" + "_25x25.png"], price_image_size)],
+                            onClicks=(lambda: print(1), lambda: print(2), lambda: print(3),
+                                      lambda: print(4)),
 
-
-                                                       imageHAligns=("left", "left", "left", "left"),
-                                                       textColours=price_colors,
-                                                       layers=[9,9,9,9]
+                            imageHAligns=("left", "left", "left", "left"),
+                            textColours=price_colors,
+                            layers=[9, 9, 9, 9]
                             )
 
                         self.build_menu_widgets.append(production_array)
@@ -762,4 +759,3 @@ class UIBuilder(SceneBuilder):
 
             # set ry (resource position y ) for next resource
             ry += row_size_y
-

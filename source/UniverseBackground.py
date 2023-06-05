@@ -12,12 +12,12 @@ from source.Globals import pictures_path
 from source.WidgetHandler import WidgetBase
 
 
-class CelestialObject(WidgetBase,Moveable):
+class CelestialObject(WidgetBase, Moveable):
     def __init__(self, win, x, y, width, height, isSubWidget=False, **kwargs):
         WidgetBase.__init__(self, win, x, y, width, height, isSubWidget, **kwargs)
         Moveable.__init__(self, x, y, width, height, kwargs)
 
-        self.rotation = random.randint(-3,3)
+        self.rotation = random.randint(-3, 3)
         self.layer = kwargs.get("layer", 3)
         self.type = kwargs.get("type", "star")
         self.x = x
@@ -38,9 +38,9 @@ class CelestialObject(WidgetBase,Moveable):
         self.ui_parent = kwargs.get("ui_parent")
 
         # append to list
-        #setattr(self.parent, getattr(self.parent, self.type), self)
+        # setattr(self.parent, getattr(self.parent, self.type), self)
         getattr(self.parent, self.type).append(self)
-        #self.parent.stars.append(self)
+        # self.parent.stars.append(self)
 
     def listen(self, events):
         pass
@@ -78,27 +78,26 @@ class CelestialObject(WidgetBase,Moveable):
                 #     image = pygame.transform.rotate(self.image,self.rotation )
                 #     self.image = image
 
-                self.image_rect.x = self.getX()-self.image.get_size()[0]/2
-                self.image_rect.y = self.getY()-self.image.get_size()[1]/2
+                self.image_rect.x = self.getX() - self.image.get_size()[0] / 2
+                self.image_rect.y = self.getY() - self.image.get_size()[1] / 2
 
                 self.win.blit(self.image, self.image_rect)
 
             elif self.type == "pulsating_star":
-                    t = pygame.time.Clock().get_time() * 0.001
-                    s = 2 * math.pi * random.random()
-                    x, y  = self.getX(), self.getY()
+                t = pygame.time.Clock().get_time() * 0.001
+                s = 2 * math.pi * random.random()
+                x, y = self.getX(), self.getY()
 
-                    flicker = s
-                    c = int(127 * max(0.5, 1 + math.cos(t + flicker)))
-                    try:
-                        gfxdraw.pixel(self.win, x, y, (c, c, c))
-                    except TypeError:
-                        print (TypeError)
+                flicker = s
+                c = int(127 * max(0.5, 1 + math.cos(t + flicker)))
+                try:
+                    gfxdraw.pixel(self.win, x, y, (c, c, c))
+                except TypeError:
+                    print(TypeError)
             else:
                 color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-                #pygame.draw.circle(self.win, color, (self._x + self._width , self._y), self.width)
-                pygame.draw.lines(self.win, color, True,[(self._x + 1, self._y), (self._x + 1, self._y)] )
-
+                # pygame.draw.circle(self.win, color, (self._x + self._width , self._y), self.width)
+                pygame.draw.lines(self.win, color, True, [(self._x + 1, self._y), (self._x + 1, self._y)])
 
     def rescale(self):
         return
@@ -111,6 +110,7 @@ class CelestialObject(WidgetBase,Moveable):
                 return
                 self.width = self._width
 
+
 class Universe(WidgetBase, Moveable):
     def __init__(self, win, x, y, width, height, isSubWidget=False, **kwargs):
         WidgetBase.__init__(self, win, x, y, width, height, isSubWidget, **kwargs)
@@ -120,9 +120,9 @@ class Universe(WidgetBase, Moveable):
         self.amount = int(math.sqrt(math.sqrt(width)) * source.Globals.settings["universe_density"])
 
         # define borders
-        self.left_end = 0#-self.getWidth()
+        self.left_end = 0  # -self.getWidth()
         self.right_end = self.getWidth()
-        self.top_end = 0#-self.getHeight()
+        self.top_end = 0  # -self.getHeight()
         self.bottom_end = self.getHeight()
 
         # images
@@ -130,20 +130,25 @@ class Universe(WidgetBase, Moveable):
             0: source.Globals.images[pictures_path]["stars"]["star_30x30.png"],
             1: source.Globals.images[pictures_path]["stars"]["star_50x50.png"],
             2: source.Globals.images[pictures_path]["stars"]["star1_50x50.png"],
-            3: source.Globals.images[pictures_path]["stars"]["star2_100x100.png"]}
+            3: source.Globals.images[pictures_path]["stars"]["star2_100x100.png"]
+            }
 
         self.asteroid_images = {
-            0: source.Globals.images[pictures_path]["celestial objects"]["asteroid_40x33.png"],}
+            0: source.Globals.images[pictures_path]["celestial objects"]["asteroid_40x33.png"],
+            }
 
         self.comet_images = {
-            0: source.Globals.images[pictures_path]["celestial objects"]["comet_90x38.png"]}
+            0: source.Globals.images[pictures_path]["celestial objects"]["comet_90x38.png"]
+            }
 
         self.nebulae_images = {
-            0: source.Globals.images[pictures_path]["celestial objects"]["nebulae_300x300.png"]}
+            0: source.Globals.images[pictures_path]["celestial objects"]["nebulae_300x300.png"]
+            }
 
         self.galaxy_images = {
             0: source.Globals.images[pictures_path]["celestial objects"]["galaxy_.png"],
-            1: source.Globals.images[pictures_path]["celestial objects"]["galaxy3_small.png"]}
+            1: source.Globals.images[pictures_path]["celestial objects"]["galaxy3_small.png"]
+            }
 
         # drawing lists
         self.star = []
@@ -165,27 +170,26 @@ class Universe(WidgetBase, Moveable):
             random.randrange(1, self.menu.get_width()),  # x position
             random.randrange(1, self.menu.get_height()),  # y position
             2 * math.pi * random.random()  # initial flickering
-        ])
-
+            ])
 
     def create_stars(self):
         # star images
-        for i in range(int(self.amount/20)):
+        for i in range(int(self.amount / 20)):
             x = random.randint(self.left_end, self.right_end)
             y = random.randint(self.top_end, self.bottom_end)
 
-            select = random.randint(0, len(self.star_images.keys())-1)
-            image = pygame.transform.scale(self.star_images[select], (15,15))
+            select = random.randint(0, len(self.star_images.keys()) - 1)
+            image = pygame.transform.scale(self.star_images[select], (15, 15))
             w = image.get_rect().width
             h = image.get_rect().height
-            star = CelestialObject(self.win,x,y,w,h,image=image, layer = self.layer, parent = self, type="star")
+            star = CelestialObject(self.win, x, y, w, h, image=image, layer=self.layer, parent=self, type="star")
 
         # flickering stars
-        for i in range(int(self.amount/3)):
+        for i in range(int(self.amount / 3)):
             x = random.randint(self.left_end, self.right_end)
             y = random.randint(self.top_end, self.bottom_end)
-            w = random.randint(1,10)
-            star = CelestialObject(self.win,x,y,w,w, layer = self.layer, parent = self, type ="star")
+            w = random.randint(1, 10)
+            star = CelestialObject(self.win, x, y, w, w, layer=self.layer, parent=self, type="star")
 
         # # puslatoing stars
         # for i in range(int(self.amount / 3)):
@@ -195,48 +199,48 @@ class Universe(WidgetBase, Moveable):
         #     star = CelestialObject(self.win, x, y, w, w, layer=self.layer, parent=self, type="pulsating_star")
 
     def create_galaxys(self):
-        for i in range(int(self.amount/300)):
-            select = random.randint(0, len(self.galaxy_images.keys())-1)
+        for i in range(int(self.amount / 300)):
+            select = random.randint(0, len(self.galaxy_images.keys()) - 1)
             image = self.galaxy_images[select]
             w = image.get_rect().width
             h = image.get_rect().height
             x = random.randint(self.left_end, self.right_end)
             y = random.randint(self.top_end, self.bottom_end)
 
-            galaxy = CelestialObject(self.win,x,y,w,h,image=image, layer = self.layer, parent = self, type= "galaxy")
+            galaxy = CelestialObject(self.win, x, y, w, h, image=image, layer=self.layer, parent=self, type="galaxy")
 
     def create_nebulaes(self):
-        for i in range(int(self.amount/250)):
-            select = random.randint(0, len(self.nebulae_images.keys())-1)
+        for i in range(int(self.amount / 250)):
+            select = random.randint(0, len(self.nebulae_images.keys()) - 1)
             image = self.nebulae_images[select]
             w = image.get_rect().width
             h = image.get_rect().height
             x = random.randint(self.left_end, self.right_end)
             y = random.randint(self.top_end, self.bottom_end)
 
-            nebulae = CelestialObject(self.win,x,y,w,h,image=image, layer = self.layer, parent = self, type= "nebulae")
+            nebulae = CelestialObject(self.win, x, y, w, h, image=image, layer=self.layer, parent=self, type="nebulae")
 
     def create_asteroids(self):
-        for i in range(int(self.amount/50)):
-            select = random.randint(0, len(self.asteroid_images.keys())-1)
+        for i in range(int(self.amount / 50)):
+            select = random.randint(0, len(self.asteroid_images.keys()) - 1)
             image = self.asteroid_images[select]
             w = image.get_rect().width
             h = image.get_rect().height
             x = random.randint(self.left_end, self.right_end)
             y = random.randint(self.top_end, self.bottom_end)
 
-            asteroid = CelestialObject(self.win,x,y,w,h,image=image, layer = self.layer, parent = self, type= "asteroid")
+            asteroid = CelestialObject(self.win, x, y, w, h, image=image, layer=self.layer, parent=self, type="asteroid")
 
     def create_comets(self):
-        for i in range(int(self.amount/350)):
-            select = random.randint(0, len(self.comet_images.keys())-1)
+        for i in range(int(self.amount / 350)):
+            select = random.randint(0, len(self.comet_images.keys()) - 1)
             image = self.comet_images[select]
             w = image.get_rect().width
             h = image.get_rect().height
             x = random.randint(self.left_end, self.right_end)
             y = random.randint(self.top_end, self.bottom_end)
 
-            comet = CelestialObject(self.win,x,y,w,h,image=image, layer = self.layer, parent = self, type= "comet")
+            comet = CelestialObject(self.win, x, y, w, h, image=image, layer=self.layer, parent=self, type="comet")
 
     def create_universe(self):
 
@@ -247,16 +251,14 @@ class Universe(WidgetBase, Moveable):
         self.create_comets()
         self.create_asteroids()
 
-
         self.universe = self.star + self.pulsating_star + self.galaxy + self.nebulae + self.comet + self.asteroid
-        #self.universe = self.pulsating_star
-        #print("Scene Objects: ", len(self.universe))
+        # self.universe = self.pulsating_star
+        # print("Scene Objects: ", len(self.universe))
 
     def draw(self):
         for celestial_object in self.universe:
             limit_positions(celestial_object)
             celestial_object.draw()
-
 
     def listen(self, events):
         return

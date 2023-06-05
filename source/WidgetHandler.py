@@ -13,6 +13,7 @@ class Debugger:
             pprint("_______________________")
             pprint(self.__dict__)
 
+
 class WidgetBase(ABC, Debugger):
     def __init__(self, win, x, y, width, height, isSubWidget=False, **kwargs):
         """ Base for all widgets
@@ -74,7 +75,7 @@ class WidgetBase(ABC, Debugger):
 
     def contains(self, x, y):
         return (self._x < x - self.win.get_abs_offset()[0] < self._x + self._width) and \
-               (self._y < y - self.win.get_abs_offset()[1] < self._y + self._height)
+            (self._y < y - self.win.get_abs_offset()[1] < self._y + self._height)
 
     def hide(self):
         self._hidden = True
@@ -182,17 +183,17 @@ class WidgetBase(ABC, Debugger):
 
 
 class WidgetHandler:
-    print ("WidgetHandler: init")
+    print("WidgetHandler: init")
 
-    layers = {0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [], 13:[], 14: []}
+    layers = {0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [], 13: [], 14: []}
 
     layer_switch = {"0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, "9": 0, "10": 0, "11": 0, "12": 0, "13": 0, "14": 0}
-    for key,value in layer_switch.items():
+    for key, value in layer_switch.items():
         layer_switch[key] = 1
 
     layer_switch["2"] = 0
 
-    #print (layers)
+    # print (layers)
     """
     layers: 
     0 = background
@@ -207,18 +208,19 @@ class WidgetHandler:
     
     9 = ui 
     """
+
     @staticmethod
     def main(events: [Event]) -> None:
         WidgetHandler.set_visible(events)
         # 0:[...]
         for key, widgetlist in WidgetHandler.layers.items():
-            #print ("WidgetHandler.layers.keys():", key, value)
+            # print ("WidgetHandler.layers.keys():", key, value)
             # get widget
             for widget in widgetlist:
                 layer = widget.layer
 
                 if str(layer) == "None":
-                    layer=10
+                    layer = 10
 
                 if WidgetHandler.layer_switch[str(layer)] == 1:
                     widget.draw()
@@ -229,7 +231,7 @@ class WidgetHandler:
     @staticmethod
     def addWidget(widget: WidgetBase) -> None:
         if str(widget.layer) == "None":
-            #print("non layered: ", widget)
+            # print("non layered: ", widget)
             WidgetHandler.layers[9].append(widget)
         else:
             WidgetHandler.layers[widget.layer].append(widget)
@@ -249,7 +251,7 @@ class WidgetHandler:
             WidgetHandler.addWidget(widget)
         except ValueError:
             pass
-            #print(f'Error: Tried to move {widget} to top when {widget} not in WidgetHandler.')
+            # print(f'Error: Tried to move {widget} to top when {widget} not in WidgetHandler.')
 
     @staticmethod
     def moveToBottom(widget: WidgetBase):
@@ -260,28 +262,28 @@ class WidgetHandler:
             WidgetHandler._widgets.insert(0, widget)
         except ValueError:
             pass
-            #print(f'Error: Tried to move {widget} to bottom when {widget} not in WidgetHandler.')
+            # print(f'Error: Tried to move {widget} to bottom when {widget} not in WidgetHandler.')
 
     @staticmethod
     def getWidgets() -> [WidgetBase]:
         return WidgetHandler._widgets
 
     def set_visible(events):
-        numbers  = [49,50,51,52,53,54,55,56,57,48]
-        others = [39]#,94]
+        numbers = [49, 50, 51, 52, 53, 54, 55, 56, 57, 48]
+        others = [39]  # ,94]
         key = None
 
         for event in events:
             if event.type == pygame.KEYDOWN:
                 # 1-0
                 if event.key in numbers:
-                    number = event.key-48
+                    number = event.key - 48
                     key = str(number)
 
                     # set value
                     if WidgetHandler.layer_switch[key] == 0:
                         WidgetHandler.layer_switch[key] = 1
-                        print("layer: " + key, WidgetHandler.layer_switch[key],WidgetHandler.layers[int(key)] )
+                        print("layer: " + key, WidgetHandler.layer_switch[key], WidgetHandler.layers[int(key)])
                         return
                     if WidgetHandler.layer_switch[key] == 1:
                         WidgetHandler.layer_switch[key] = 0
@@ -302,7 +304,4 @@ class WidgetHandler:
                 #         WidgetHandler.layer_switch[key] = 0
                 #         return
 
-
-
-
-        #print(WidgetHandler.layer_switch)
+        # print(WidgetHandler.layer_switch)

@@ -6,7 +6,7 @@ from source.WidgetHandler import WidgetBase
 
 
 class ToolTip(WidgetBase):
-    def __init__(self, surface, x, y, width, height, color, text_color,isSubWidget, parent, **kwargs):
+    def __init__(self, surface, x, y, width, height, color, text_color, isSubWidget, parent, **kwargs):
         super().__init__(surface, x, y, width, height, isSubWidget, **kwargs)
         self.layer = kwargs.get("layer", 4)
         self.visible = False
@@ -40,7 +40,7 @@ class ToolTip(WidgetBase):
                         x1 = event.pos[0] - self.text_img.get_width() / 2
 
                         if x > max_x:
-                            self.x = max_x - self.text_img.get_width()  -10
+                            self.x = max_x - self.text_img.get_width() - 10
                         elif x1 < min_x:
                             self.x = min_x
                         # else center
@@ -58,7 +58,7 @@ class ToolTip(WidgetBase):
         else:
             self.visible = False
 
-    def draw_bordered_rect(self,x,y):
+    def draw_bordered_rect(self, x, y):
         for i in range(4):
             pygame.draw.rect(self.win, (0, 0, 0), (x - i, y - i, 155, 155), 5)
 
@@ -69,10 +69,10 @@ class ToolTip(WidgetBase):
         self.height = self.text_img.get_height() + 10
         self.size = (self.width, self.height)
         self.rect_filled = pygame.surface.Surface(self.size)
-        self.rect_filled.set_alpha(128)
+        self.rect_filled.set_alpha(23)
         self.win.blit(self.rect_filled, (self.x, self.y))
         self.win.blit(self.text_img, (self.x + 5, self.y + 5))
-        #self.draw_bordered_rect(self.x, self.y)
+        # self.draw_bordered_rect(self.x, self.y)
 
     def listen(self, events):
         pass

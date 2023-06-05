@@ -7,8 +7,9 @@ from source.WidgetHandler import WidgetBase
 
 
 class Icon(WidgetBase):
-    def __init__(self,win, x, y, width, height, isSubWidget,**kwargs):# image, key, tooltip, frame_color, moveable, include_text, parent):
-        super().__init__(win, x, y, width, height, isSubWidget, **kwargs )
+    def __init__(self, win, x, y, width, height, isSubWidget,
+                 **kwargs):  # image, key, tooltip, frame_color, moveable, include_text, parent):
+        super().__init__(win, x, y, width, height, isSubWidget, **kwargs)
         self.layer = kwargs.get("layer", 4)
         self.parent = kwargs.get("parent")
         self.value = 0
@@ -25,7 +26,7 @@ class Icon(WidgetBase):
         self.y = y
         self.width = width
         self.height = height
-        self.rect.x, self.rect.y = x,y
+        self.rect.x, self.rect.y = x, y
 
         # text
         self.include_text = kwargs.get("include_text")
@@ -53,7 +54,7 @@ class Icon(WidgetBase):
 
         # register
         self.parent.icons.append(self)
-        #self.update(pygame.event.get())
+        # self.update(pygame.event.get())
 
     def move(self, events):
         if not self.moveable:   return
@@ -75,7 +76,7 @@ class Icon(WidgetBase):
             if event.type == MOUSEBUTTONDOWN:
                 if self.rect.collidepoint(event.pos):
                     if self.function:
-                        print ("executing:", self.function)
+                        print("executing:", self.function)
                         exec(self.function)
 
             elif event.type == MOUSEMOTION:
@@ -104,13 +105,13 @@ class Icon(WidgetBase):
 
         if self.key != "":
             if self.key == "city":
-                self.text =  str(int(getattr(self.parent.player, "population"))) + "/" + str(self.parent.player.population_limit)
+                self.text = str(int(getattr(self.parent.player, "population"))) + "/" + str(self.parent.player.population_limit)
             else:
-                self.text =  str(int(self.value)) + "/" + str(int(getattr(self.parent, "production_" + self.key)))
+                self.text = str(int(self.value)) + "/" + str(int(getattr(self.parent, "production_" + self.key)))
 
         self.text_img = self.font.render(self.text, True, self.frame_color)
 
-    def on_hover_release_callback(self,x,y):
+    def on_hover_release_callback(self, x, y):
         if self.contains(x, y):
             self.on_hover = True
             self.on_hover_release = False
@@ -127,7 +128,7 @@ class Icon(WidgetBase):
     def reset_tooltip(self):
         if not self._hidden:
             x, y = Mouse.getMousePos()
-            if self.on_hover_release_callback(x,y):
+            if self.on_hover_release_callback(x, y):
                 source.Globals.tooltip_text = ""
 
     def listen(self, events):
@@ -148,6 +149,3 @@ class Icon(WidgetBase):
         for i in self.__dict__.items():
             if hasattr(i, "update()"):
                 i.update()
-
-
-
