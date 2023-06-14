@@ -1,4 +1,3 @@
-
 """
 pygame-menu
 https://github.com/ppizarror/pygame-menu
@@ -26,6 +25,8 @@ this class should be stored in app.(UIBuilder).
 if settings_run: should be in draw() of class wich calls the mainloop.
 
 """
+
+
 def main(test: bool = False, **kwargs) -> None:
     surface = source.Globals.win
 
@@ -46,25 +47,25 @@ def main(test: bool = False, **kwargs) -> None:
         height=WINDOW_SIZE[1] * 0.85,
         theme=settings_menu_theme,
         title='Building Prices:',
-        width=WINDOW_SIZE[0] * 0.9,)
+        width=WINDOW_SIZE[0] * 0.9, )
 
     # # get name and dict, create text input for name, min population, production time
     source.config.load_settings()
     for building, dict in source.config.prices.items():
         prices_menu.add.text_input(
-                            building + ":",
-                            maxwidth=0,
-                            textinput_id=building,
-                            input_underline='',
-                            align=pygame_menu.locals.ALIGN_CENTER,
-                            input_type=pygame_menu.locals.INPUT_INT,
-                            fontcolor= source.Globals.colors.frame_color)
+            building + ":",
+            maxwidth=0,
+            textinput_id=building,
+            input_underline='',
+            align=pygame_menu.locals.ALIGN_CENTER,
+            input_type=pygame_menu.locals.INPUT_INT,
+            fontcolor=source.Globals.colors.frame_color)
 
         prices_menu.add.text_input(
             "minimum population to build:",
             maxwidth=0,
             textinput_id=building + ".minimum population",
-            default= source.config.build_population_minimum[building],
+            default=source.config.build_population_minimum[building],
             input_underline='',
             align=pygame_menu.locals.ALIGN_LEFT,
             input_type=pygame_menu.locals.INPUT_INT,
@@ -81,15 +82,16 @@ def main(test: bool = False, **kwargs) -> None:
             fontcolor=source.Globals.colors.frame_color)
 
         # get resource and value, create text input for value
-        for resource, value  in dict.items():
+        for resource, value in dict.items():
             prices_menu.add.text_input(
-                                resource + ': ',
-                                default=value,
-                                maxwidth=0,
-                                textinput_id=building + "." + resource,
-                                input_underline='',
-                                align=pygame_menu.locals.ALIGN_LEFT,
-                                input_type = pygame_menu.locals.INPUT_INT)
+                resource + ': ',
+                default=value,
+                maxwidth=0,
+                textinput_id=building + "." + resource,
+                input_underline='',
+                align=pygame_menu.locals.ALIGN_LEFT,
+                input_type=pygame_menu.locals.INPUT_INT)
+        prices_menu.add.none_widget("none_widget" + building)
 
     def data_fun_prices() -> None:
         """
@@ -101,14 +103,14 @@ def main(test: bool = False, **kwargs) -> None:
             print(f'\t{k}\t=>\t{data[k]}')
 
         # store data into file
-        #source.Globals.settings = data
+        # source.Globals.settings = data
         source.SaveLoad.write_file("buildings_prices.json", data)
 
     # Add final buttons
     prices_menu.add.button('Store data', data_fun_prices, button_id='store')  # Call function
     prices_menu.add.button('Restore original values', prices_menu.reset_value)
     prices_menu.add.button('Return to main menu', pygame_menu.events.BACK,
-                             align=pygame_menu.locals.ALIGN_LEFT)
+        align=pygame_menu.locals.ALIGN_LEFT)
     # ___________________________________________________________________________________________________________________
     # create production menu
     # ___________________________________________________________________________________________________________________
@@ -117,7 +119,7 @@ def main(test: bool = False, **kwargs) -> None:
         height=WINDOW_SIZE[1] * 0.85,
         theme=settings_menu_theme,
         title='Building Production:',
-        width=WINDOW_SIZE[0] * 0.9,)
+        width=WINDOW_SIZE[0] * 0.9, )
 
     # get name and dict, create text input for name
     for building, dict in source.config.production.items():
@@ -141,7 +143,6 @@ def main(test: bool = False, **kwargs) -> None:
                 align=pygame_menu.locals.ALIGN_LEFT,
                 input_type=pygame_menu.locals.INPUT_INT)
 
-
     def data_fun_production() -> None:
         """
         Print data of the menu.
@@ -158,7 +159,7 @@ def main(test: bool = False, **kwargs) -> None:
     production_menu.add.button('Store data', data_fun_production, button_id='store')  # Call function
     production_menu.add.button('Restore original values', prices_menu.reset_value)
     production_menu.add.button('Return to main menu', pygame_menu.events.BACK,
-                             align=pygame_menu.locals.ALIGN_LEFT)
+        align=pygame_menu.locals.ALIGN_LEFT)
 
     # -------------------------------------------------------------------------
     # Create menus: Main menu
@@ -169,7 +170,7 @@ def main(test: bool = False, **kwargs) -> None:
     main_menu_theme.widget_font_size = 30
 
     main_menu = pygame_menu.Menu(
-        height=WINDOW_SIZE[1] ,
+        height=WINDOW_SIZE[1],
         onclose=pygame_menu.events.BACK,  # User press ESC button
         theme=main_menu_theme,
         title='Building Editor',

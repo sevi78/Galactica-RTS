@@ -1,3 +1,4 @@
+import os
 import time
 
 import pygame
@@ -10,13 +11,13 @@ from source.AppHelper import limit_positions
 from source.Button import Button, ButtonArray, ImageButton
 from source.Globals import pictures_path
 from source.Levels import level_dict
+from source.PointedCircle import PointedCircle
 from source.Sounds import sounds
 from source.config import production
 
 
 class PlanetConfig:
-    def __init__(self,**kwargs):
-
+    def __init__(self, **kwargs):
         self.name = kwargs.get("name")
         self.x = source.config.planet_positions[self.name][0]  # x
         self.y = source.config.planet_positions[self.name][1]  # y
@@ -25,7 +26,7 @@ class PlanetConfig:
         self.alien_population = 0
         self.buildings_max = 10
         self.building_slot_amount = 3
-        self.specials = None
+        self.specials = []
         self.type = source.texts.planet_texts[self.name].split("\n")[3].split(": ")[1]
         self.possible_resources = kwargs.get("possible_resources")
         self.image_name_small = level_dict[1][self.name]["image_name"]
@@ -35,14 +36,17 @@ class PlanetConfig:
         #
         # print ("PlanetConfig", self.__dict__)
 
+
+
+
 class PlanetButtons(PlanetConfig):
     """
     base class of Planet. stores the buttons and some variables.
     holds the functions for the buttons, create ect
     """
+
     def __init__(self, **kwargs):
         self.overview_buttons = []
-
 
     def hide_building_buttons(self):
         for buttonarray in self.building_buttons_list:
@@ -56,6 +60,7 @@ class PlanetButtons(PlanetConfig):
         :param resource:
         :return:
         """
+
         if self.building_buttons[resource].isVisible():
             self.building_buttons[resource].hide()
             for button in self.building_buttons[resource].getButtons():
@@ -77,7 +82,7 @@ class PlanetButtons(PlanetConfig):
             else:
                 i.hide()
 
-    def set_building_button_tooltip(self,i ):
+    def set_building_button_tooltip(self, i):
         """
         creates tooltops for the buttons
         :param i:
@@ -85,7 +90,7 @@ class PlanetButtons(PlanetConfig):
         """
         return_list = []
         price_list = []
-        production_list =[]
+        production_list = []
 
         # prices
         text = ""
@@ -107,7 +112,8 @@ class PlanetButtons(PlanetConfig):
         for building in self.parent.buildings[i.name]:
             # population
             if building in self.population_buildings:
-                text = ". a " + building + " increases the planets population limit by " + str(self.population_buildings_values[building]) + "  "
+                text = ". a " + building + " increases the planets population limit by " + str(
+                    self.population_buildings_values[building]) + "  "
 
             elif building[0] == "a":
                 text = " . an " + building + " will produce: "
@@ -129,8 +135,8 @@ class PlanetButtons(PlanetConfig):
 
         return return_list
 
-    def create_building_slots(self):
-        #print ("create_building_slots!")
+    def create_planet_button_array(self):
+        # print ("create_planet_button_array!")
         """
         creates the ui elements for the planet:
         buildong icons, overview icons, buttons ect
@@ -141,7 +147,7 @@ class PlanetButtons(PlanetConfig):
         self.overview_buttons = []
         slot_image_size = 25
         x = self._x
-        y = self._y - self.getHeight()/2
+        y = self._y - self.getHeight() / 2
 
         # # open build menu
         # self.button_build_menu_open = Button(self.win, x-slot_image_size,y,slot_image_size, slot_image_size,isSubWidget=False,
@@ -149,83 +155,85 @@ class PlanetButtons(PlanetConfig):
         #                                     onClick=lambda: self.parent.open_build_menu()  )
         # self.button_build_menu_open.hide()
 
-        #resource icons
-        images = [pygame.transform.scale(source.Globals.images[pictures_path]["resources"][i + "_25x25.png"],(slot_image_size,slot_image_size))
+        # resource icons
+        images = [pygame.transform.scale(
+            source.Globals.images[pictures_path]["resources"][i + "_25x25.png"], (slot_image_size, slot_image_size))
                   for i in self.possible_resources]
 
         # ["not set", "not set", "not set","not set", "not set","not set"]
-        self.building_slots = ButtonArray(self.win,
-                                          x= x,
-                                          y= y,
-                                          width=len(self.possible_resources)*slot_image_size,
-                                          height=slot_image_size+1,
-                                          shape =(len(self.possible_resources),1),border=1,bottomBorder=0,rightBorder=0,leftBorder=0,topBorder=0,
-                                          images=images,
-                                          borderThickness=2,inactiveBorderColours=[source.Globals.colors.frame_color for i in range(6) ],
+        self.planet_button_array = ButtonArray(self.win,
+            x=x,
+            y=y,
+            width=len(self.possible_resources) * slot_image_size,
+            height=slot_image_size + 1,
+            shape=(len(self.possible_resources), 1), border=1, bottomBorder=0, rightBorder=0, leftBorder=0, topBorder=0,
+            images=images,
+            borderThickness=2, inactiveBorderColours=[source.Globals.colors.frame_color for i in range(6)],
 
-                                          tooltips=self.possible_resources,
-                                          onClicks=(
-                                          lambda: self.show_building_buttons(self.possible_resources[0]),
-                                          lambda: self.show_building_buttons(self.possible_resources[1]),
-                                          lambda: self.show_building_buttons(self.possible_resources[2]),
-                                          lambda: self.show_building_buttons(self.possible_resources[3]),
-                                          lambda: self.show_building_buttons(self.possible_resources[4]),
-                                          lambda: self.show_building_buttons(self.possible_resources[5])
-                                              ),
-                                          parents=[self, self, self, self,self, self],
-                                          ui_parents=[self, self, self, self,self, self],
-                                          names= self.possible_resources,
-                                          layers= [9,9,9,9,9,9],
-                                          inactiveColours=[source.Globals.colors.background_color for i in range(6) ],
-                                          borderColours=[source.Globals.colors.frame_color for i in range(6) ])#[4,4,4,4,4,4])#[1,1,1,1,1,1]
-
+            tooltips=self.possible_resources,
+            onClicks=(
+                lambda: self.show_building_buttons(self.possible_resources[0]),
+                lambda: self.show_building_buttons(self.possible_resources[1]),
+                lambda: self.show_building_buttons(self.possible_resources[2]),
+                lambda: self.show_building_buttons(self.possible_resources[3]),
+                lambda: self.show_building_buttons(self.possible_resources[4]),
+                lambda: self.show_building_buttons(self.possible_resources[5])
+                ),
+            parents=[self, self, self, self, self, self],
+            ui_parents=[self, self, self, self, self, self],
+            names=self.possible_resources,
+            layers=[9, 9, 9, 9, 9, 9],
+            inactiveColours=[source.Globals.colors.background_color for i in range(6)],
+            borderColours=[source.Globals.colors.frame_color for i in range(6)])  # [4,4,4,4,4,4])#[1,1,1,1,1,1]
 
         # building buttons
-        for i in self.building_slots.getButtons():
-            images = [source.Globals.images[pictures_path]["buildings"][self.parent.buildings[i.name][0] + "_25x25.png"],
-                      source.Globals.images[pictures_path]["buildings"][self.parent.buildings[i.name][1] + "_25x25.png"],
-                      source.Globals.images[pictures_path]["buildings"][self.parent.buildings[i.name][2] + "_25x25.png"]]
+        for i in self.planet_button_array.getButtons():
+            images = [
+                source.Globals.images[pictures_path]["buildings"][self.parent.buildings[i.name][0] + "_25x25.png"],
+                source.Globals.images[pictures_path]["buildings"][self.parent.buildings[i.name][1] + "_25x25.png"],
+                source.Globals.images[pictures_path]["buildings"][self.parent.buildings[i.name][2] + "_25x25.png"]]
 
-            scaled_images = [pygame.transform.scale(image,(slot_image_size,slot_image_size)) for image in images]
+            scaled_images = [pygame.transform.scale(image, (slot_image_size, slot_image_size)) for image in images]
             info_texts = [source.config.create_info_panel_building_text()[self.parent.buildings[i.name][0]],
                           source.config.create_info_panel_building_text()[self.parent.buildings[i.name][1]],
                           source.config.create_info_panel_building_text()[self.parent.buildings[i.name][2]]]
 
             # ["not set", "not set", "not set"]
-            building_buttons = ButtonArray( self.win,
-                                            x=i.getX(),
-                                            y=y-slot_image_size-slot_image_size-i.getHeight(),
-                                            width=slot_image_size+1,
-                                            height=3*slot_image_size,
-                                            shape =(1,3),
-                                            border=1,bottomBorder=0,rightBorder=0,leftBorder=0,topBorder=0,
-                                            images= scaled_images,
-                                            borderThickness=0,
-                                            texts= [self.parent.buildings[i.name][0], self.parent.buildings[i.name][1], self.parent.buildings[i.name][2]],
-                                            tooltips=self.set_building_button_tooltip(i),
+            building_buttons = ButtonArray(self.win,
+                x=i.getX(),
+                y=y - slot_image_size - slot_image_size - i.getHeight(),
+                width=slot_image_size + 1,
+                height=3 * slot_image_size,
+                shape=(1, 3),
+                border=1, bottomBorder=0, rightBorder=0, leftBorder=0, topBorder=0,
+                images=scaled_images,
+                borderThickness=0,
+                texts=[self.parent.buildings[i.name][0], self.parent.buildings[i.name][1],
+                       self.parent.buildings[i.name][2]],
+                tooltips=self.set_building_button_tooltip(i),
 
-                                            parents=[self, self, self],
-                                            ui_parents=[self, self, self],
-                                            names= self.parent.buildings[i.name],
-                                            textColours= [(0,0,0), (0,0,0), (0,0,0)],
-                                            fontSizes= [0,0,0],
-                                            info_texts= info_texts,
-                                            layers=[9,9,9,9,9,9]#[4,4,4,4,4,4] #[1, 1, 1, 1, 1, 1]
-                                            )
+                parents=[self, self, self],
+                ui_parents=[self, self, self],
+                names=self.parent.buildings[i.name],
+                textColours=[(0, 0, 0), (0, 0, 0), (0, 0, 0)],
+                fontSizes=[0, 0, 0],
+                info_texts=info_texts,
+                layers=[9, 9, 9, 9, 9, 9]  # [4,4,4,4,4,4] #[1, 1, 1, 1, 1, 1]
+                )
 
             # hide initially
             building_buttons.hide()
-            self.building_slots.hide()
+            self.planet_button_array.hide()
 
             # register
             self.building_buttons[i.name] = building_buttons
             self.building_buttons_list.append(building_buttons)
 
         # thumpsup button
-        self.thumpsup_button_size = (20,20)
+        self.thumpsup_button_size = (20, 20)
         self.thumpsup_button = ImageButton(self.win,
-            x=self._x - slot_image_size ,
-            y=self.building_slots.getY(),
+            x=self._x - slot_image_size,
+            y=self.planet_button_array.getY(),
             width=self.thumpsup_button_size[0],
             height=self.thumpsup_button_size[1],
             isSubWidget=False,
@@ -235,8 +243,9 @@ class PlanetButtons(PlanetConfig):
             parent=self.parent,
             ui_parent=self,
             tooltip="indicates whether the production is in plus ",
-            image=pygame.transform.flip(pygame.transform.scale(source.Globals.images[pictures_path]["icons"]["thumps_up.png"],self.thumpsup_button_size),True,False),
-            layer= 9)
+            image=pygame.transform.flip(pygame.transform.scale(source.Globals.images[pictures_path]["icons"][
+                "thumps_up.png"], self.thumpsup_button_size), True, False),
+            layer=9)
 
         self.overview_buttons.append(self.thumpsup_button)
 
@@ -245,7 +254,7 @@ class PlanetButtons(PlanetConfig):
 
         self.smiley_button = ImageButton(self.win,
             x=self._x - slot_image_size * 2,
-            y=self.building_slots.getY(),
+            y=self.planet_button_array.getY(),
             width=self.smiley_button_size[0],
             height=self.smiley_button_size[1],
             isSubWidget=False,
@@ -253,8 +262,9 @@ class PlanetButtons(PlanetConfig):
             transparent=True,
             image_hover_surface_alpha=255,
             parent=self.parent,
-            ui_parent =self,
-            tooltip="indicates the satisfaction of the population", image=source.Globals.images[pictures_path]["icons"]["smile.png"],
+            ui_parent=self,
+            tooltip="indicates the satisfaction of the population", image=source.Globals.images[pictures_path]["icons"][
+                "smile.png"],
             layer=9
             )
         self.smiley_button.hide()
@@ -262,24 +272,27 @@ class PlanetButtons(PlanetConfig):
         self.overview_buttons.append(self.smiley_button)
 
 
-
 class Planet(Button, PlanetButtons):
     """ this is the planet class, inherited from:
     from pygame_widgets.button import Button
     """
-    def __init__(self, win, x, y, width, height,isSubWidget, **kwargs):
+
+    def __init__(self, win, x, y, width, height, isSubWidget, **kwargs):
         # inherit the base class
         Button.__init__(self, win, x, y, width, height, isSubWidget, **kwargs)
         PlanetButtons.__init__(self)
 
-
         # setup variables
+
+
         self.fog_of_war_radius = self.getWidth() * 1.5
         self.layer = kwargs.get("layer", 1)
         self.name = kwargs.get("name")
         self.parent = kwargs.get("parent")
         self.planet_image = kwargs.get("image")
         self.image = kwargs.get("image")
+        self.image_name_small = None
+        self.image_name_big = None
         self.imageRect = self.image.get_rect()
         self.hover_image = pygame.transform.scale(kwargs.get("hover_image"), (self.getWidth(), self.getHeight()))
         self.hover_image.set_alpha(200)
@@ -289,12 +302,15 @@ class Planet(Button, PlanetButtons):
         self.orbit_angle = 0
         self.orbit_distance = 0
         self.orbit_object = kwargs.get("orbit_object", None)
-        self.offset = Vector2(200, 0)
+        self.orbit_circle = None
+
+        self.offset = Vector2(0, 0)
         self.orbit_speed = 0.002
 
         self.win = win
-        self.x = source.config.planet_positions[self.name][0]#x
-        self.y = source.config.planet_positions[self.name][1]#y
+        self.database_path = "levels" + os.sep + "level1" + os.sep + "planets" + os.sep + self.name + ".json"
+        self.x = source.SaveLoad.load_file(self.database_path)["x"]#source.config.planet_positions[self.name][0]  # x
+        self.y = source.SaveLoad.load_file(self.database_path)["y"]#source.config.planet_positions[self.name][1]  # y
 
         self.size_x = width
         self.size_y = height
@@ -309,7 +325,7 @@ class Planet(Button, PlanetButtons):
         self.hoverColour = kwargs.get("hoverColour", (150, 0, 0))
         self.pressedColour = kwargs.get("pressedColour", (0, 200, 20))
         self.radius = 5
-        self.onClick = lambda: self.execute( kwargs)
+        self.onClick = lambda: self.execute(kwargs)
         self.text.set_alpha(0)
         self.button_build_menu_open = None
         self.on_hover = False
@@ -317,7 +333,7 @@ class Planet(Button, PlanetButtons):
 
         # setup Game variables
         self.info_text = kwargs.get("info_text")
-        self.resources = {"energy":0, "food":0, "minerals":0, "water":0}
+        self.resources = {"energy": 0, "food": 0, "minerals": 0, "water": 0}
         self.explored = False
         self.just_explored = False
         self.buildings = []
@@ -326,10 +342,16 @@ class Planet(Button, PlanetButtons):
         self.population_limit = 0.0
         self.population_grow = 0.0
         self.alien_population = 0
+
         self.building_slot_amount = 3
+        self.building_slot_upgrades = 0
+        self.building_slot_upgrade_prices = {0:500, 1:750, 2:1250, 3:2500, 4:5000, 5:25000, 6:100000}
+        self.building_slot_upgrade_energy_consumtion = {0: 0, 1: 2, 2: 3, 3: 5, 4: 10, 5: 15, 6: 25 }
+        self.building_slot_max_amount = self.building_slot_amount + len(self.building_slot_upgrade_prices)
+
         self.building_cue = 0
-        self.building_slots = None
-        self.specials = None
+        self.planet_button_array = None
+        self.specials = []
         self.type = ""
         self.possible_resources = kwargs.get("possible_resources")
 
@@ -349,7 +371,7 @@ class Planet(Button, PlanetButtons):
         self.production_city = self.production["city"]
         self.production_technology = self.production["technology"]
 
-        #population buildings
+        # population buildings
         self.population_buildings = ["town", "city", "metropole"]
         self.population_buildings_values = {"town": 1000, "city": 10000, "metropole": 100000}
 
@@ -359,60 +381,81 @@ class Planet(Button, PlanetButtons):
         self.building_buttons_food = []
         self.building_buttons_minerals = []
 
-        self.building_buttons = {"energy":self.building_buttons_energy,
-                                 "food":self.building_buttons_food,
-                                 "minerals":self.building_buttons_minerals,
-                                 "water":self.building_buttons_water}
-        self.building_buttons_list =self.building_buttons_energy + self.building_buttons_food +\
-                                    self.building_buttons_minerals + self.building_buttons_water
+        self.building_buttons = {"energy": self.building_buttons_energy,
+                                 "food": self.building_buttons_food,
+                                 "minerals": self.building_buttons_minerals,
+                                 "water": self.building_buttons_water
+                                 }
+        self.building_buttons_list = self.building_buttons_energy + self.building_buttons_food + \
+                                     self.building_buttons_minerals + self.building_buttons_water
 
-        self.create_building_slots()
+        self.create_planet_button_array()
 
         # register the button
         self.parent.game_objects.append(self)
         self.parent.planets.append(self)
-        #self.hide()
+        # self.hide()
 
         self.planet_config = PlanetConfig(**kwargs)
 
+        self.setup()
+
+    def setup(self):
+        for key, value in source.SaveLoad.load_file(self.database_path).items():
+            if key in self.__dict__:
+                # lists
+                if "[" in str(value):
+                    value = eval(value)
+                setattr(self, key, value)
+
+
+
     def set_orbit_object(self, obj):
+        #self.set_center()
         self.orbit_object = obj
-        self.orbit_distance = source.AppHelper.get_distance(self.pos, obj.pos)
-        self.offset.x = self.orbit_object.getX() - self.getX()
-        self.offset.y = self.orbit_object.getY() - self.getY()
-        self.orbit_speed = (self.offset.x / self.orbit_distance) * 0.01
+        #self.orbit_object.set_center()
+        self.orbit_distance = source.AppHelper.get_distance(self.center, obj.center)
+        self.offset.x = self.orbit_object.center[0] - self.center[0]
+        self.offset.y = self.orbit_object.center[1] - self.center[1]
+        self.orbit_speed = (self.offset.x / self.orbit_distance) * (source.Globals.game_speed/1000)
 
     def orbit(self):
+        self.orbit_speed = (self.offset.x / self.orbit_distance) * (source.Globals.time_factor/ 1000)
         self.orbit_angle += self.orbit_speed
-        orbit_point = self.orbit_object.imageRect.center - self.offset.rotate(self.orbit_angle)
+        #self.orbit_object.set_center()
+        pos = self.orbit_object.getX() + self.getWidth()/2, self.orbit_object.getY() + self.getHeight()/2
+        #orbit_point = (self.orbit_object.getX(), self.orbit_object.getY()) - self.offset.rotate(self.orbit_angle)
+        orbit_point = pos - self.offset.rotate(self.orbit_angle)
         self._x = orbit_point[0]
         self._y = orbit_point[1]
-        self.set_center()
+        #self.set_center()
+        self.orbit_circle = PointedCircle(  self.win,
+                                            self.orbit_object._x, self.orbit_object._y, 20, source.colors.frame_color)
+        if self.explored:
+            self.parent.fog_of_war.draw_fog_of_war(self)
+
+        source.AppHelper.debug_positions(self.orbit_object._x, self.orbit_object._y, source.Globals.colors.frame_color, "self.orbit_object._x, self.orbit_object._y", 30)
 
 
-    def orbit_(self):
-        self.orbit_angle += self.orbit_speed
-        orbit_point = self.orbit_object.imageRect.center + self.offset.rotate(-self.orbit_angle)
-        self._x = orbit_point[0]
-        self._y = orbit_point[1]
-        self.set_center()
+    def draw_orbit(self):
+        if self.orbit_object:
+            if self.orbit_circle:
+                if source.Globals.show_orbit:
+                    #pos = self.orbit_object.center[0] + self.getWidth() , self.orbit_object.center[1] + self.getHeight()
 
-    def orbit__(self):
-        self.orbit_angle -= self.orbit_speed
-        orbit_center = self.orbit_object.imageRect.center
-        orbit_point = self.offset.rotate(self.orbit_angle) + orbit_center
-        self._x = orbit_point[0]
-        self._y = orbit_point[1]
-        self.set_center()
+                    #pos = self.orbit_object.center[0] + self.getWidth()/2, self.orbit_object.center[1] + self.getHeight()/2
+                    pos = self.orbit_object.getX() + self.orbit_object.getWidth()/2,self.orbit_object.getY() + self.orbit_object.getHeight()/2
+                    pygame.draw.circle(source.Globals.win, source.colors.frame_color, pos, self.orbit_distance * self.parent.pan_zoom_handler.zoom, 1,)
+                    #self.win.blit(self.image, self.imageRect)
+                    #self.orbit_circle.update()
 
     def set_population_limit(self):
         """
         sets the population limit for the planet, based on city buildongs:
         "town":1000,  "city":10000, "metropole":100000
-        :return:
         """
-
-        self.population_limit = sum([self.population_buildings_values[i] for i in self.buildings if i in self.population_buildings])
+        self.population_limit = sum([self.population_buildings_values[i] for i in self.buildings if
+                                     i in self.population_buildings])
 
     def update_game_variables(self):
         """
@@ -420,6 +463,9 @@ class Planet(Button, PlanetButtons):
         :return:
         """
         # timed execute: wait = seconds
+        self.calculate_production()
+        self.parent.calculate_global_production()
+
         if time.time() > self.start_time + self.wait:
             self.start_time = time.time()
             if self.population_limit > self.population:
@@ -436,13 +482,15 @@ class Planet(Button, PlanetButtons):
             "food": 0,
             "minerals": 0,
             "water": 0,
-            "technology":0,
-            "city":0
+            "technology": 0,
+            "city": 0
             }
 
         for i in self.buildings:
             for key, value in production[i].items():
                 self.production[key] += value
+
+        self.production["energy"] -= self.parent.get_sum_up_to_n(self.building_slot_upgrade_energy_consumtion, self.building_slot_upgrades+1)
 
         self.production_water = self.production["water"]
         self.production_energy = self.production["energy"]
@@ -459,9 +507,13 @@ class Planet(Button, PlanetButtons):
             if value < 0:
                 vl.append(value)
         if len(vl) > 0:
-            self.thumpsup_button.setImage(pygame.transform.flip(pygame.transform.scale(source.Globals.images[pictures_path]["icons"]["thumps_upred.png"],self.thumpsup_button_size),True,True))
+            self.thumpsup_button.setImage(pygame.transform.flip(pygame.transform.scale(
+                source.Globals.images[pictures_path]["icons"][
+                    "thumps_upred.png"], self.thumpsup_button_size), True, True))
         else:
-            self.thumpsup_button.setImage(pygame.transform.flip(pygame.transform.scale(source.Globals.images[pictures_path]["icons"]["thumps_up.png"],self.thumpsup_button_size),True,False))
+            self.thumpsup_button.setImage(pygame.transform.flip(pygame.transform.scale(
+                source.Globals.images[pictures_path]["icons"][
+                    "thumps_up.png"], self.thumpsup_button_size), True, False))
 
         if self.production["food"] > 0:
             self.smiley_button.setImage(source.Globals.images[pictures_path]["icons"]["smile.png"])
@@ -492,14 +544,14 @@ class Planet(Button, PlanetButtons):
         self.parent.info_panel.set_text(text)
         self.parent.info_panel.set_planet_image(self.image)
 
-    def execute(self,  kwargs):
+    def execute(self, kwargs):
         """ this executes the code when clicked on the button """
         if self.parent.build_menu_visible: return
         self.set_info_text()
-        #self.parent.selected_planet = self
+        # self.parent.selected_planet = self
         self.parent.set_selected_planet(self)
 
-    def on_hover_release_callback(self,x,y):
+    def on_hover_release_callback(self, x, y):
         """
         :param x:
         :param y:
@@ -524,7 +576,7 @@ class Planet(Button, PlanetButtons):
         """
         if not self._hidden:
             x, y = Mouse.getMousePos()
-            if self.on_hover_release_callback(x,y):
+            if self.on_hover_release_callback(x, y):
                 source.Globals.tooltip_text = ""
 
     def listen(self, events):
@@ -535,14 +587,15 @@ class Planet(Button, PlanetButtons):
         """
         self.reset_tooltip()
         self.move(events)
+
         if not self._hidden and not self._disabled:
             mouseState = Mouse.getMouseState()
             x, y = Mouse.getMousePos()
 
-            if self.contains(x, y): # checks if mouse over ??
+            if self.contains(x, y):  # checks if mouse over ??
                 if mouseState == MouseState.RIGHT_CLICK:
                     self.parent.set_selected_planet(self)
-                    
+
                 if mouseState == MouseState.RELEASE and self.clicked:
                     self.clicked = False
                     self.onRelease(*self.onReleaseParams)
@@ -556,7 +609,7 @@ class Planet(Button, PlanetButtons):
                     pass
 
                 elif mouseState == MouseState.HOVER or mouseState == MouseState.DRAG:
-                    self.win.blit(self.hover_image,(self._x, self._y))
+                    self.win.blit(self.hover_image, (self._x, self._y))
 
                     if self.tooltip != "":
                         source.Globals.tooltip_text = self.tooltip
@@ -571,18 +624,19 @@ class Planet(Button, PlanetButtons):
         :param events:
         :return:
         """
-        super().move(events,self)
+        super().move(events, self)
 
-    def update(self): 
+    def update(self):
+
         """
         updates the planet...a lot of stuff, hav e look on the code, its self explaining
-        :return:
         """
         if self.name == "Sun":
             self.disable()
             if not self.explored:
                 self.parent.fog_of_war.draw_fog_of_war(self)
                 self.explored = True
+
             # hide if some ui is blockin it
             if self.parent.event_panel._hidden:
                 if not self.parent.build_menu_visible:
@@ -590,12 +644,23 @@ class Planet(Button, PlanetButtons):
             return
 
         # update orbit angle
-        self.orbit()
+        if source.Globals.enable_zoom:
+            self.enable_orbit = False
+        else:
+            self.enable_orbit = True
+
+
+        if source.Globals.enable_orbit:
+            self.enable_orbit = True
+        else:
+            self.enable_orbit = False
+
+        if self.enable_orbit:
+            self.orbit()
         # surface = pygame.surface.Surface([self.orbit_distance, self.orbit_distance])
         # pygame.draw.circle(surface, (140, 170, 100), (self.orbit_object.getX(), self.orbit_object.getY()),
         #     self.orbit_distance, 1)
         # self.win.blit(surface,(self.orbit_object.getX(), self.orbit_object.getY()))
-
 
         # limit positions
         limit_positions(self)
@@ -633,7 +698,6 @@ class Planet(Button, PlanetButtons):
 
         self.set_population_limit()
 
-
     def get_explored(self):
         """
         called only once when the planet gets explored
@@ -641,16 +705,10 @@ class Planet(Button, PlanetButtons):
         :return:
         """
         sounds.play_sound(sounds.happy, channel=4)
-        self.building_slots.enable()
-        for i in self.building_slots.getButtons():
-            #print (i)
-            #i.enable()
+        self.planet_button_array.enable()
+        for i in self.planet_button_array.getButtons():
+            # print (i)
+            # i.enable()
             i.show()
         self.show_overview_button()
         self.parent.set_selected_planet(self)
-
-
-
-
-
-

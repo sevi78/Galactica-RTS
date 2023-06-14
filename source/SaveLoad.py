@@ -1,34 +1,48 @@
 import json
 import os
 
+import pygame
+
+
 def abs_database():
     # gets the path to store the files: database at root
     dir_path = os.path.dirname(os.path.realpath(__file__))
     abs_database_path = os.path.split(dir_path)[0] + os.sep + "database" + os.sep
     return abs_database_path
 
+
 def load_existing_file(filename):
     with open(os.path.join(abs_database() + filename), 'r+') as file:
         file = json.load(file)
     return file
 
+
 def write_file(filename, data):
     with open(os.path.join(abs_database() + filename), 'w') as file:
         json.dump(data, file)
 
+
 def load_file(filename):
     try:
-    # Save is loaded
+        # Save is loaded
         data = load_existing_file(filename)
     except FileNotFoundError:
-    # No save file, so create one
+        # No save file, so create one
         data = create_file()
         write_file(filename, data)
     return data
 
+
 def create_file():
-    new_file = {'todo': '', 'fps': '600', 'width': (('1920',), 0), 'height': (('1080',), 0), 'scene_width': 8000, 'scene_height': 8000, 'universe_density': 1, 'visible_layers': ([('0', 1), ('1', 0)], [0, 1]), 'draw_background_image': False, 'navigation': True, 'moveable': True, 'game_speed': 12.400000000000002, 'time_factor': 1}
+    new_file = {'todo': '', 'fps': '600', 'width': (('1920',), 0), 'height': (
+    ('1080',), 0), 'scene_width': 8000, 'scene_height': 8000, 'universe_density': 1, 'visible_layers': (
+    [('0', 1), ('1', 0)], [0,
+                           1]), 'draw_background_image': False, 'navigation': True, 'moveable': True, 'game_speed': 12.400000000000002, 'time_factor': 1
+                }
     return new_file
+
+
+
 #
 # if __name__ == "__main__":
 #

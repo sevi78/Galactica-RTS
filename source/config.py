@@ -111,24 +111,25 @@ prices = {
         "minerals": 50
         },
     }
-build_population_minimum = {     'solar panel': 0,
-                                 'wind mill': 1000,
-                                 'power plant': 10000,
-                                 'spring': 0,
-                                 'water treatment': 1000,
-                                 'terra former': 10000,
-                                 'farm': 0,
-                                 'ranch': 1000,
-                                 'agriculture complex': 10000,
-                                 'mine': 0,
-                                 'open pit': 1000,
-                                 'mineral complex': 10000,
-                                 'town': 0,
-                                 'city': 0,
-                                 'metropole': 0,
-                                 'university': 0,
-                                 'space harbor': 1000,
-                                 'particle accelerator': 10000}
+build_population_minimum = {'solar panel': 0,
+                            'wind mill': 1000,
+                            'power plant': 10000,
+                            'spring': 0,
+                            'water treatment': 1000,
+                            'terra former': 10000,
+                            'farm': 0,
+                            'ranch': 1000,
+                            'agriculture complex': 10000,
+                            'mine': 0,
+                            'open pit': 1000,
+                            'mineral complex': 10000,
+                            'town': 0,
+                            'city': 0,
+                            'metropole': 0,
+                            'university': 0,
+                            'space harbor': 1000,
+                            'particle accelerator': 10000
+                            }
 building_production_time_scale = 5
 
 building_production_time = {
@@ -362,8 +363,6 @@ load_settings()
 # print (build_restrictions_population)
 
 
-
-
 def create_info_panel_building_text():
     building_panel_info_text = {}
     text = ""
@@ -375,17 +374,12 @@ def create_info_panel_building_text():
             text += resource + ": " + str(value) + "\n"
         text += "\n" + "production: " + "\n"
         text += "\n"
-        for r ,v in production[building].items():
+        for r, v in production[building].items():
             text += r + ": " + str(v) + "\n"
 
         building_panel_info_text[building] = text
 
     return building_panel_info_text
-
-
-
-
-
 
 
 # building_text = {}
@@ -404,20 +398,24 @@ def create_info_panel_building_text():
 # print (building_production_time)
 
 
-planet_positions = {
-    '01110001110110101': (513, 932),
-    'GIN V.S.X.O.': (1788, 742),
-    'Helios 12': (89, 410),
-    'Kepler-22b': (214, 173),
-    'ur-anus': (613, 258),
-    'XKGPRZ 7931': (1316, 531),
-    'Zeta Bentauri': (1495, 121),
-    'zork': (1132, 122),
-    'Sun': (925, 458),
-    "asteroids":(123,321)
-    }
+# planet_positions = {
+#     'P0101': (513, 932),
+#     'GIN V.S.X.O.': (1788, 742),
+#     'Helios 12': (89, 410),
+#     'Kepler-22b': (214, 173),
+#     'ur-anus': (613, 258),
+#     'XKGPRZ 7931': (1316, 531),
+#     'Zeta Bentauri': (1495, 121),
+#     'zork': (1132, 122),
+#     'Sun': (925, 458),
+#     "asteroids": (123, 321)
+#     }
 
+planet_positions = {'P0101': (1274.8285714285494, -162.97142857144792), 'GIN V.S.X.O.': (
+1242.8285714285917, 435.02857142868413), 'Helios 12': (-254.17142857141616, -80.9714285714216), 'Kepler-22b': (
+314.82857142856915, 154.02857142855405), 'ur-anus': (1089.8285714285769, -876.9714285713771), 'XKGPRZ 7931': (
+42.8285714285698, -651.9714285713837), 'Zeta Bentauri': (1639.828571428568, -614.9714285714012), 'zork': (
+130.82857142858333, -951.9714285713397), 'Sun': (581.8285714282565, -357.97142857146946), 'asteroids': (123, 321)
+ }
 
 population_grow_factor = 0.1
-
-

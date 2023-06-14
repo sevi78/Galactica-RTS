@@ -19,21 +19,20 @@ class FogOfWar(WidgetBase, Moveable):
     def listen(self, events):
         pass
 
-    def draw_fog_of_war(self,obj,**kwargs):
+    def draw_fog_of_war(self, obj, **kwargs):
         """
         draws the fog of war circle based on the fog of war raduis of the obj
         :param obj:
         :param kwargs:
         :return:
         """
-        if source.Globals.app == None: # bullshit here, bad initializing
+        if source.Globals.app == None:  # bullshit here, bad initializing
             return
-        x, y = kwargs.get("x", obj.getX() + obj.getWidth()/2), kwargs.get("y", obj.getY() + obj.getHeight()/2)
+        x, y = kwargs.get("x", obj.getX() + obj.getWidth() / 2), kwargs.get("y", obj.getY() + obj.getHeight() / 2)
 
         # recalculate position because fog of war surface is moved too
         x = x - source.Globals.app.fog_of_war.getX()
         y = y - source.Globals.app.fog_of_war.getY()
         radius = kwargs.get("radius", obj.fog_of_war_radius)
         pygame.draw.circle(surface=self.surface, color=(60, 60, 60), center=(
-         x, y), radius=radius, width=0)
-
+            x, y), radius=radius, width=0)

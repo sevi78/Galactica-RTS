@@ -22,7 +22,7 @@ class EventPanel(WidgetBase, EventText):
         self.layer = kwargs.get("layer", 9)
         self.win = win
         self.parent = kwargs.get("parent")
-        self.frame_color =source.Globals.colors.frame_color
+        self.frame_color = source.Globals.colors.frame_color
         self.bg_color = pygame.colordict.THECOLORS["black"]
         self.font = pygame.font.SysFont(None, 32)
         self.title_font = pygame.font.SysFont(None, 50)
@@ -33,7 +33,8 @@ class EventPanel(WidgetBase, EventText):
         self.surface_rect = self.surface.get_rect()
         self.surface_rect[0] = x
         self.surface_rect[1] = y
-        self.image =source.Globals.images[pictures_path]["textures"]["event_panel.png"]#pygame.image.load(os.path.split (source.Globals.dirpath)[0] + os.sep + "event_panel.png")
+        self.image = source.Globals.images[pictures_path]["textures"][
+            "event_panel.png"]  # pygame.image.load(os.path.split (source.Globals.dirpath)[0] + os.sep + "event_panel.png")
         self.image_scaled = pygame.transform.scale(self.image, (width, height))
 
         # text
@@ -45,7 +46,6 @@ class EventPanel(WidgetBase, EventText):
         self.title = None
         self.body = None
         self.functions = []
-
 
         self.obsolete_text = []
         self.set_text("start")
@@ -65,9 +65,9 @@ class EventPanel(WidgetBase, EventText):
         win_width = win.get_width()
         win_height = win.get_height()
 
-        x = win_width/2 - width/2
-        y = win_height/2 - height/2
-        pos = (x,y)
+        x = win_width / 2 - width / 2
+        y = win_height / 2 - height / 2
+        pos = (x, y)
 
         return pos
 
@@ -93,7 +93,7 @@ class EventPanel(WidgetBase, EventText):
                 self.word_height_sum += word_height
 
                 if x + word_width >= max_width:
-                    x = pos[0] + self.border # Reset the x.
+                    x = pos[0] + self.border  # Reset the x.
                     y += word_height  # Start on new row.
                 self.text_surfaces[str(x) + "_" + str(y)] = word_surface
                 self.win.blit(word_surface, (x, y))
@@ -119,18 +119,19 @@ class EventPanel(WidgetBase, EventText):
                 self.win.blit(self.image_scaled, self.surface_rect)
 
                 # title
-                self.title_surface = self.title_font.render(self.title,self.font,source.Globals.colors.ui_dark)
+                self.title_surface = self.title_font.render(self.title, self.font, source.Globals.colors.ui_dark)
                 self.title_surface_rect = self.title_surface.get_rect()
-                x = pos[0]+self.getWidth()/2 - self.title_surface.get_width() / 2
+                x = pos[0] + self.getWidth() / 2 - self.title_surface.get_width() / 2
                 self.title_surface_rect.x = x
-                self.title_surface_rect.y = (pos[1]+self.getHeight()/8)
+                self.title_surface_rect.y = (pos[1] + self.getHeight() / 8)
 
                 self.win.blit(self.title_surface, self.title_surface_rect)
 
-                self.body_text = drawText(self.win, self.body,source.Globals.colors.ui_dark,
-                    (pos[0]+self.getWidth()/6, (pos[1]+self.getHeight()/8*2), self.getWidth()/6*4, self.getHeight()/8*7), self.font, "center")
+                self.body_text = drawText(self.win, self.body, source.Globals.colors.ui_dark,
+                    (pos[0] + self.getWidth() / 6, (pos[1] + self.getHeight() / 8 * 2), self.getWidth() / 6 * 4,
+                     self.getHeight() / 8 * 7), self.font, "center")
 
-                pygame.mixer.music =source.Globals.sounds.intro_drama
+                pygame.mixer.music = source.Globals.sounds.intro_drama
                 pygame.mixer.music.play(fade_ms=1000)
 
         else:
@@ -152,7 +153,6 @@ class EventPanel(WidgetBase, EventText):
         if player.population >= 1000:
             if not "goal2" in self.obsolete_text:
                 self.set_text("goal2")
-
 
 # ep = EventPanel(win=win, x=300,y=200,width=900,height=600, center= True)
 #

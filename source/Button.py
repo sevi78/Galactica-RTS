@@ -8,7 +8,7 @@ from source.__init__ import update
 
 
 class Moveable:
-    def __init__(self,x,y,width,height, kwargs):
+    def __init__(self, x, y, width, height, kwargs):
         self.ui_parent = kwargs.get("ui_parent", None)
         self.ui_parent_offset_x = 0
         self.ui_parent_offset_y = 0
@@ -51,7 +51,7 @@ class ImageButton(WidgetBase, Moveable):
 
     def __init__(self, win, x, y, width, height, isSubWidget=False, **kwargs):
         super().__init__(win, x, y, width, height, isSubWidget, **kwargs)
-        Moveable.__init__(self,x,y,width,height, kwargs)
+        Moveable.__init__(self, x, y, width, height, kwargs)
         self.layer = kwargs.get("layer", 3)
         self.parent = kwargs.get("parent")
         self.center = (self.getX() + self.getWidth() / 2, self.getY() + self.getHeight() / 2)
@@ -215,7 +215,7 @@ class ImageButton(WidgetBase, Moveable):
             pass
 
     def set_center(self):
-        #self.center = (self.getX() + self.getWidth() / 2, self.getY() + self.getHeight() / 2)
+        # self.center = (self.getX() + self.getWidth() / 2, self.getY() + self.getHeight() / 2)
         self.center = self.imageRect.center
 
     def setImage(self, image):
@@ -334,7 +334,7 @@ class Button(WidgetBase, Moveable):
 
         # self.image_hover_surface = pygame.surface.Surface((self.width, self.height), 0, self.win)
         self.image_hover_surface = pygame.surface.Surface((
-        width + self.radius_extension, height + self.radius_extension), 0, self.win)
+            width + self.radius_extension, height + self.radius_extension), 0, self.win)
         self.image_hover_surface.set_alpha(kwargs.get("image_hover_surface_alpha", 0))
 
         self.image = kwargs.get('image', None)
@@ -472,7 +472,7 @@ class Button(WidgetBase, Moveable):
 
                     # set planet on click of the building slot buttons
                     if self.parent:
-                        if hasattr(self.parent,"property"):
+                        if hasattr(self.parent, "property"):
                             if self.parent.property == "planet":
                                 source.Globals.app.set_selected_planet(self.parent)
                                 self.parent.set_info_text()
@@ -513,6 +513,10 @@ class Button(WidgetBase, Moveable):
 
     def draw(self):
         """ Display to surface """
+        if hasattr(self, "draw_orbit"):
+            if callable(self.draw_orbit):
+                self.draw_orbit()
+
         self.update_position()
         if not self._hidden:
             if not self.transparent:
@@ -536,7 +540,7 @@ class Button(WidgetBase, Moveable):
             else:
                 if self.target:
                     self.trackTo(self.target)
-                    #self.win.blit(self.image_hover_surface, self.imageRect)
+                    # self.win.blit(self.image_hover_surface, self.imageRect)
                 else:
 
                     self.imageRect = self.image.get_rect()
@@ -569,7 +573,7 @@ class Button(WidgetBase, Moveable):
         surface_rect.x = self._x
         surface_rect.y = self._y
         surface.set_alpha(0)
-        #self.win.blit(surface, surface.get_rect())
+        # self.win.blit(surface, surface.get_rect())
 
         self.image = image
         # self.image.set_alpha(0)
@@ -726,14 +730,12 @@ class ButtonArray(WidgetBase):
                 x = self._x + i * (width + self.separationThickness) + self.leftBorder
                 y = self._y + j * (height + self.separationThickness) + self.topBorder
                 kwargs = {k: v[count] for k, v in self.buttonAttributes.items() if v is not None}
-                #print ("Button: kwargs:", kwargs)
+                # print ("Button: kwargs:", kwargs)
                 self.buttons.append(Button(self.win, x, y, width, height, isSubWidget=True,
                     **kwargs)
                     )
 
-
                 count += 1
-
 
     def listen(self, events):
         pass
@@ -755,7 +757,7 @@ class ButtonArray(WidgetBase):
 
             for rect in rects:
                 pass
-                #pygame.draw.rect(self.win, self.colour, rect)
+                # pygame.draw.rect(self.win, self.colour, rect)
                 # this draws the annoying background
 
             for circle in circles:

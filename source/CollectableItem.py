@@ -3,10 +3,12 @@ from source.AppHelper import get_distance
 from source.Button import Button, Moveable
 from source.Sounds import sounds
 
-class CollectableItem(Button,Moveable):
-    def __init__(self, win, x, y, width, height,  **kwargs):
+
+class CollectableItem(Button, Moveable):
+    def __init__(self, win, x, y, width, height, **kwargs):
         Button.__init__(self, win, x, y, width, height, **kwargs)
-        Moveable.__init__(self,x,y,width,height, kwargs)
+        Moveable.__init__(self, x, y, width, height, kwargs)
+        self.zoomable = True
         self.moveable = False
         self.explored = False
         self.property = "item"
@@ -15,6 +17,7 @@ class CollectableItem(Button,Moveable):
         self.layer = kwargs.get("layer", 1)
         self.parent = kwargs.get("parent")
         self.image = kwargs.get("image")
+        self.image_raw = kwargs.get("image")
         self.info_text = kwargs.get("infotext")
         self.energy = kwargs.get("energy", 0)
         self.food = kwargs.get("food", 0)
@@ -22,17 +25,25 @@ class CollectableItem(Button,Moveable):
         self.water = kwargs.get("water", 0)
         self.population = kwargs.get("population", 0)
         self.technology = kwargs.get("technology", None)
-        self.resources =  {"water": self.water, "energy":self.energy, "food":self.food, "minerals":self.minerals}
+        self.resources = {"water": self.water, "energy": self.energy, "food": self.food, "minerals": self.minerals, "technology": self.technology}
         self.collect_text = ""
+
+        self.parent.collectables.append(self)
 
     def collect_resources(self, collector):
         for key, value in self.resources.items():
             if value > 0:
                 self.collect_text += str(value) + " of " + key + " "
-                setattr(collector, key, getattr(collector, key) + value)
+                if getattr(collector, key) + value > getattr(collector, key + "_max"):
+                    setattr(collector, key, getattr(collector, key + "_max"))
+                else:
+                    setattr(collector, key, getattr(collector, key) + value)
+
                 collector.set_resources()
                 collector.set_info_text()
                 sounds.play_sound(sounds.collect_success)
+
+        
 
     def get_collected(self):
         collector = None
@@ -59,7 +70,7 @@ class CollectableItem(Button,Moveable):
         :return:
         """
 
-        super().move(events,self)
+        super().move(events, self)
 
     def get_explored(self):
         if not self.explored:

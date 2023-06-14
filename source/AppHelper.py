@@ -1,21 +1,16 @@
+import json
 import math
 import os
 import sys
-
+import threading
+from threading import Thread
 import pygame
+from pygame_widgets.util import drawText
 
-from source.config import production, planet_positions
+import source
 
+from source.__init__ import production, planet_positions
 
-class Inspector:# doesnt work :(
-    def memory(self):
-        # Getting all memory using os.popen()
-        total_memory, used_memory, free_memory = map(
-            int, os.popen('free -t -m').readlines()[-1].split()[1:])
-
-        usage = "RAM memory % used: " +  str(round((used_memory / total_memory) * 100, 2)) + "used_memory: " + str(used_memory)
-
-        return usage
 
 
 class UIHelper:
@@ -38,10 +33,10 @@ class UIHelper:
         self.spacing = 10
 
     def set_anchor_right(self, value):
-        self.anchor_right  = self.width - value
+        self.anchor_right = self.width - value
 
     def set_anchor_bottom(self, value):
-        self.anchor_bottom  = self.height - value
+        self.anchor_bottom = self.height - value
 
     def set_spacing(self, spacing):
         self.spacing = spacing
@@ -57,9 +52,9 @@ class UIHelper:
         win_width = win.get_width()
         win_height = win.get_height()
 
-        x = win_width/2 - width/2
-        y = win_height/2 - height/2
-        pos = (x,y)
+        x = win_width / 2 - width / 2
+        y = win_height / 2 - height / 2
+        pos = (x, y)
         return pos
 
     def update(self):
@@ -78,7 +73,7 @@ class UIHelper:
         # print (self.width, self.height)
         # print ("UIHelper: anchor_right:  ", self.anchor_right)
 
-    def hms(self, seconds):#no use
+    def hms(self, seconds):  # no use
         """
         time converter
         :param seconds:
@@ -95,6 +90,8 @@ class AppHelper:
 
     def __init__(self):
         self.population_limit = None
+        self.ctrl_pressed = False
+        self.s_pressed = False
 
     def quit_game(self, events):
         """
@@ -127,8 +124,10 @@ class AppHelper:
                     os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x, y)
                     pygame.display.set_mode(size, pygame.RESIZABLE)
 
+
+
     def clear_widgets(self, events):
-        #print ("clear_widgets: not implemented")
+        # print ("clear_widgets: not implemented")
         return
         # kaputt
         """ deletes all WidgetHandler.WidgetHandler.getWidgets(), (Buttons from 'Button' class """
@@ -138,7 +137,7 @@ class AppHelper:
                     print("clear widgets", event.key)
 
                     # get all widgets
-                    widgets =WidgetHandler.WidgetHandler.getWidgets()
+                    widgets = WidgetHandler.WidgetHandler.getWidgets()
 
                     # why the f..k we need to repeat the delete process???
                     while len(widgets) > 0:
@@ -227,7 +226,7 @@ class AppHelper:
         if planet:
             self.selected_planet = planet
             self.info_panel.update(self.events)
-            self.building_panel.update()
+
 
     def update_icons(self, events):
         for icon in self.icons:
@@ -237,6 +236,8 @@ class AppHelper:
     def update_game_objects(self, events):
         for game_object in self.game_objects:
             game_object.update()
+
+
 
     def calculate_global_production(self):
         """
@@ -248,8 +249,8 @@ class AppHelper:
             "food": 0,
             "minerals": 0,
             "water": 0,
-            "technology":0,
-            "city":0
+            "technology": 0,
+            "city": 0
             }
 
         self.population_limit = 0
@@ -257,9 +258,14 @@ class AppHelper:
             # set population limits
             self.population_limit += planet.population_limit
 
+            # set production values
             for i in planet.buildings:
                 for key, value in production[i].items():
                     self.production[key] += value
+
+        # subtract the building_slot_upgrades ( they cost 1 energy)
+        for planet in self.planets:
+            self.production["energy"] -= self.get_sum_up_to_n(planet.building_slot_upgrade_energy_consumtion, planet.building_slot_upgrades+1)
 
         self.player.population_limit = self.population_limit
         self.player.production = self.production
@@ -271,27 +277,21 @@ class AppHelper:
 
         # self.player.population = population
 
-    def get_planet_positions(self):
-        """
-        sets planet positions into dict, will be used for Level Editor
-        :return:
-        """
-        for i in self.planets:
 
-            planet_positions[i.name] = (i.getX(), i.getY())
 
     def cheat(self, events):
         """cheat you bloody cheater :) """
         for event in events:
             if event.type == pygame.KEYDOWN:
-                if event.key == 99:# C
+                if event.key == 99:  # C
                     self.player.energy += 1000
                     self.player.food += 1000
                     self.player.minerals += 1000
                     self.player.water += 1000
+                    self.player.technology += 10000
+
                     if self.ship:
                         self.ship.energy = 10000
-
 
                     self.player.population += 250
                     for i in self.planets:
@@ -302,10 +302,10 @@ class AppHelper:
                     #         i.hide()
                     #         print (get_distance(self.ship.pos, (i.getX(), i.getY())))
                     #     # self.get_planet_positions()
-                    for p in self.planets:
-                         p.explored = True
+                    # for p in self.planets:
+                    #     p.explored = True
 
-    def draw_fog_of_war(self,obj,**kwargs):
+    def draw_fog_of_war(self, obj, **kwargs):
         """
         draws the fog of war circle based on the fog of war raduis of the obj
         :param obj:
@@ -320,6 +320,63 @@ class AppHelper:
         # if hasattr(self, "fog_of_war"):
         #     pygame.draw.circle(surface=self.fog_of_war, color=(60, 60, 60), center=(
         #      x, y), radius=radius, width=0)
+
+    def store_planet_positions(self, events):
+        # gets values from save file(settings.json)
+        level = source.Globals.app.level
+        dirpath = os.path.dirname(os.path.realpath(__file__))
+        database_path = os.path.split(dirpath)[0] + os.sep + "database" + os.sep
+        pictures_path = os.path.split(dirpath)[0] + os.sep + "pictures" + os.sep
+        level_path = database_path + "levels" + os.sep + "level" + str(level) + os.sep
+
+
+
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_s:
+                    self.s_pressed = True
+                if event.key == pygame.K_LCTRL:
+                    self.ctrl_pressed = True
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_s:
+                    self.s_pressed = False
+                if event.key == pygame.K_LCTRL:
+                    self.ctrl_pressed = False
+
+            if self.ctrl_pressed and self.s_pressed:
+                for planet in self.planets:
+
+                    with open(os.path.join(level_path + "planets" + os.sep + planet.name + ".json"), 'r+') as file:
+                        planet_settings = json.load(file)
+                        planet_settings["x"] = planet.getX()
+                        planet_settings["y"] = planet.getY()
+
+
+
+                    with open(os.path.join(level_path + "planets" + os.sep + planet.name + ".json"), 'w') as file:
+                        json.dump(planet_settings, file)
+
+                        print(planet_settings)
+
+    def get_planet_positions(self):
+        """
+        sets planet positions into dict, will be used for Level Editor
+        :return:
+        """
+        for i in self.planets:
+            planet_positions[i.name] = (i.getX(), i.getY() )
+            #planet_positions[i.name] = (i.getX() - self.navigation.scene_x, i.getY() - self.navigation.scene_y)
+
+        return planet_positions
+
+    def get_sum_up_to_n(self, dict, n):
+        sum = 0
+        for key, value in dict.items():
+            if key < n:
+                sum += value
+
+        return sum
 
 def get_distance(pos_a, pos_b):
     """
@@ -339,7 +396,11 @@ def get_distance(pos_a, pos_b):
 
     return distance
 
+
 def limit_positions(obj):
+    """
+    this hides the obj if it is outside the screen
+    """
     win = pygame.display.get_surface()
     test = 100
     zero = 0
@@ -347,55 +408,54 @@ def limit_positions(obj):
     win_height = win.get_height()
     x = obj.getX()
     y = obj.getY()
+    if hasattr(obj, "center"):
+        obj.set_center()
     #
     # if obj.type == "star" and not obj._hidden and x in range(-10, 10):
     #     print ("x, y, obj.getWidth(), obj._hidden", x, y, obj.getWidth(), obj._hidden)
-    if not hasattr(obj, "crew"):
-        if x <= zero or x >= win_width :
-            obj.hide()
-        elif y <= zero or y >= win_height:
-            obj.hide()
+
+    if hasattr(obj, "property"):
+        if obj.property == "ship" or obj.property == "planet":
+            pass
         else:
-            obj.show()
-
-def orbit(obj):
-    return
-    # Add the rotated offset vector to the pos vector to get the rect.center.
-    obj.rect.center = obj.pos + obj.offset.rotate(obj.orbit_angle)
-    orbit_point = obj.orbit_object.imageRect.center + self.offset.rotate(self.angle)
-
-    self.imageRect.center = orbit_point
-
-    def update(obj):
-        obj.orbit_angle -= 2
-        # Add the rotated offset vector to the pos vector to get the rect.center.
-        obj.rect.center = obj.pos + obj.offset.rotate(obj.orbit_angle)
+            hide_obj_outside_view(obj, win_height, win_width, x, y, zero)
+    else:
+        hide_obj_outside_view(obj, win_height, win_width, x, y, zero)
 
 
-    # print (self.imageRect.center)
+def hide_obj_outside_view(obj, win_height, win_width, x, y, zero):
+    if x <= zero or x >= win_width:
+        obj.hide()
+    elif y <= zero or y >= win_height:
+        obj.hide()
+    else:
+        obj.show()
 
 
+def debug_positions(x, y, color, text, size, **kwargs):
+    if not source.debug:
+        return
+    # color = kwargs.get("color", "red")
+    # x,y = kwargs.get("x"), kwargs.get("y")
+    # size = kwargs.get("size")
+    text = text + str(int(x)) + ", " + str(int(y))
+    text_spacing = 15
 
-    # print (self.imageRect.center)
-    # self.setX(self.imageRect.left)
-    # self.setY(self.imageRect.top)
-    #
-    # # orbit_point = (self.imageRect.left,self.imageRect.top)
-    #
-    # if self.get_distance_to(orbit_point) >= 1:
-    #     self.move_to(orbit_point)
-    #     self.orbiting = False
-    # else:
-    #     self.orbiting = True
-    #
-    # if self.orbiting:
-    # self.setX(self.imageRect.left)
-    # self.setY(self.imageRect.top)
-    # self.orbiting = True
-
-    # set progress bar position
+    pygame.draw.circle(source.win, color, (x, y), size, 1)
+    font = pygame.font.SysFont(None, 18)
+    drawText(source.win, text, color, (x, y, 400, 30), font, "left")
 
 
+def check_function_execution(func):
 
+
+    func_thread = Thread(target=func)
+
+    return func_thread.is_alive()
+
+
+def set_event_text(self,new_text):
+    if new_text != self.parent.event_text:
+        self.parent.event_text = new_text
 
 

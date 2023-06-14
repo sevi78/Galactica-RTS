@@ -5,7 +5,7 @@ from source.Button import Moveable
 from source.Globals import WIDTH, HEIGHT
 from source.WidgetHandler import WidgetBase
 
-
+#from __init__ import Globals, WidgetBase, Moveable, pygame, source, WIDTH, HEIGHT
 class BackgroundImage(WidgetBase, Moveable):
     def __init__(self, win, x, y, width, height, isSubWidget=False, **kwargs):
         WidgetBase.__init__(self, win, x, y, width, height, isSubWidget, **kwargs)
@@ -19,9 +19,9 @@ class BackgroundImage(WidgetBase, Moveable):
 
     def draw(self):
         if source.Globals.draw_background_image:
-            self.win.blit(self.image, (self.x,self.y))
+            self.win.blit(self.image, (self.x, self.y))
         else:
-            pygame.draw.rect(self.win, self.color, (0,0, self._width, self._height))
+            pygame.draw.rect(self.win, self.color, (0, 0, self._width, self._height))
 
     def listen(self, events):
         pass
