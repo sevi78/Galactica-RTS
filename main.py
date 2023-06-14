@@ -13,7 +13,6 @@ import source.config
 from source.AppHelper import AppHelper
 from source.BuildingWidget import BuildingWidget
 from source.Button import Button
-from source.Globals import WIDTH, HEIGHT
 from source.Sounds import sounds
 from source.UIBuilder import UIBuilder
 from source.__init__ import update
@@ -63,6 +62,7 @@ class GameLogic:
             self.event_text = "you have reached the maximum(" + str(planet.building_slot_amount) + ") of buildings that can be build at the same time on " + planet.name + "!"
             sounds.play_sound("bleep", channel=7)
             return
+
         if len(planet.buildings) + planet.building_cue >= planet.buildings_max:
             self.event_text = "you have reached the maximum(" + str(planet.buildings_max) + ") of buildings that can be build on " + planet.name + "!"
             sounds.play_sound("bleep", channel=7)
@@ -114,7 +114,7 @@ class GameLogic:
                 key=widget_key,
                 value=widget_value,
                 planet=planet,
-                tooltip="building widdgetS", layer=4
+                tooltip="building widdget", layer=4
                 )
             # add building widget to building cue to make shure it can be build only if building_cue is < building_slots_amount
             planet.building_cue += 1
@@ -149,6 +149,7 @@ class GameLogic:
 
 class App(AppHelper, UIBuilder, GameLogic):
     def __init__(self, width, height):
+        AppHelper.__init__(self)
         UIBuilder.__init__(self, width, height)
         # set app-icon
         pygame.display.set_icon(source.Globals.images[source.Globals.pictures_path]["planets"]["Zeta Bentauri_60x60.png"])
@@ -212,7 +213,8 @@ class App(AppHelper, UIBuilder, GameLogic):
         # set global population
         self.player.population = int(sum([i.population for i in self.planets]))
 
-
+        # sore planet positions
+        self.store_planet_positions(events)
         #self.background.draw()
 
     def loop(self):
@@ -225,8 +227,7 @@ class App(AppHelper, UIBuilder, GameLogic):
         # game loop
         while self.run == 1:
 
-            if enable_zoom:
-                self.zoom_win.refresh_window()
+
                 #self.zoom_win.loop()
             #self.building_editor.draw()
             # settings
@@ -236,10 +237,14 @@ class App(AppHelper, UIBuilder, GameLogic):
 
             # draw background, fog of war
             if hasattr(self,"background_image"):
-                #self.win.blit(self.bg, (0, 0))
-                pass
                 self.background_image.draw()
+
+
             self.update_game_objects(events)
+            if enable_zoom:
+                
+                self.pan_zoom_handler.listen(events)
+
             #self.box_selection.listen(events, self.win)
 
             update(events)
