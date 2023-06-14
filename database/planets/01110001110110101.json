@@ -1,8 +1,8 @@
 {
-  "name": "01110001110110101",
+  "name": "P0101",
   "x": 513,
   "y": 932,
-  "info_text": "\nName: 01110001110110101\n\nType: Rocky Planet\n\nRaw materials: minerals and energy\n\nDwellers: Binary beings that exist only in quantum form and converse in digital language. Extremely tedious to make contact, diplomacy is almost impossible. Since they hardly interact with matter, coexistence with material beings is completely unproblematic, you can simply ignore them.\n\nSpecial: None\n\n",
+  "info_text": "\nName: P0101\n\nType: Rocky Planet\n\nRaw materials: minerals and energy\n\nDwellers: Binary beings that exist only in quantum form and converse in digital language. Extremely tedious to make contact, diplomacy is almost impossible. Since they hardly interact with matter, coexistence with material beings is completely unproblematic, you can simply ignore them.\n\nSpecial: None\n\n",
   "population_grow": 0.0,
   "alien_population": 0,
   "buildings_max": 10,
@@ -10,6 +10,6 @@
   "specials": "None",
   "type": "Rocky Planet",
   "possible_resources": "['energy', 'minerals', 'city']",
-  "image_name_small": "01110001110110101_50x50.png",
-  "image_name_big": "01110001110110101_150x150.png"
+  "image_name_small": "P0101_50x50.png",
+  "image_name_big": "P0101_150x150.png"
 }
