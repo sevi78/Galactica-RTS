@@ -1,0 +1,16 @@
+{
+  "name": "XKGPRZ 7931",
+  "x": 1475.5199999999572,
+  "y": 1200.346666666645,
+  "info_text": "\nName: XKGPRZ 7931, also called 'the Brocken'\n\nType: Rocky Planet\n\nRaw materials: minerals\n\nInhabitants: cacti and rockworms. The rockworms also like to nibble on spaceships and their crews from time to time.\n\nSpecial: None\n\n",
+  "population_grow": 0.0,
+  "alien_population": 0,
+  "buildings_max": 12,
+  "building_slot_amount": 2,
+  "specials": "None",
+  "type": "Rocky Planet",
+  "possible_resources": "['food', 'minerals', 'city', 'technology']",
+  "image_name_small": "XKGPRZ 7931_50x50.png",
+  "image_name_big": "XKGPRZ 7931_150x150.png",
+  "orbit_speed": 0.004
+}

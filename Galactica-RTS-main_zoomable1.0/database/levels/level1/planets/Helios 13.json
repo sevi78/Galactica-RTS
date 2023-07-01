@@ -1,0 +1,18 @@
+{
+  "name": "Helios 13",
+  "database_path": "levels\\level1\\planets\\Helios 13.json",
+  "x": 779.5199999999518,
+  "y": 1319.346666666633,
+  "info_text": "\nName: Helios 13\n\nType: gas planet\n\nRaw materials: water and energy\n\nOccupants: uninhabited\n\nSpecial: This gas planet is on the threshold of the sun and quite warm. A longer stay is therefore not recommended, unless you want to be contaminated or well cooked.\n\n",
+  "population_grow": 0.0,
+  "alien_population": 0,
+  "buildings_max": 10,
+  "building_slot_amount": 3,
+  "specials": "None",
+  "type": "gas planet",
+  "possible_resources": "['energy','water', 'city']",
+  "image_name_small": "Helios 12_70x70.png",
+  "image_name_big": "Helios 12_150x150.png",
+  "orbit_planet": "Sun",
+  "orbit_speed": 0.005
+}
