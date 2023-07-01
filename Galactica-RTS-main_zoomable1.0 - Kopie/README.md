@@ -21,23 +21,19 @@ build cities, metrolopes to enhance your population.
 **Done so far:**
 
 - building system, building editor, 
-- solar system (1) so far.
-- ship moving mechanics, ship energy reloading, ship orbiting 
+- solar systems
+- ship moving mechanics, ship energy reloading
 - planet editor, planet orbit around sun
 - json database to store all planets, resources and buildings
 - collectable items
-- panning system
+- panning and zooming system
 - dynamic UI
 - extendable layer system for bliting the images in the right order 
-
-**work in progress:**
-
 - event system: feedbacks from the game for the user about what is happening 
 - implementing of ingame "technology" for building space harbor
 
 **TODO:**
 - a lot !!!
-- panning and zooming
 - nice images for buildings, planets ect
 
 **Problems:**
@@ -56,7 +52,7 @@ pycharm, GIMP
 
 **to start the game:**
 
-download the whole folder (MASTER branch!). open terminal. drag "main.py" into terminal, press enter.
+download the whole folder. open terminal. drag "main.py" into terminal, press enter.
 --- hopefully the game starts --- 
 
 
