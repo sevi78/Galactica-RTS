@@ -27,6 +27,7 @@ class CollectableItem(WidgetBase, Moveable):
         self.image = kwargs.get("image")
         self.image_raw = kwargs.get("image")
         self.imageRect = self.image.get_rect()
+        self.center = self.imageRect.center
         self.info_text = kwargs.get("infotext")
         self.tooltip = kwargs.get("tooltip", None)
         self.energy = kwargs.get("energy", 0)
@@ -40,6 +41,10 @@ class CollectableItem(WidgetBase, Moveable):
 
         self.parent.collectables.append(self)
 
+    def set_center(self):
+        # self.center = (self.getX() + self.getWidth() / 2, self.getY() + self.getHeight() / 2)
+        self.imageRect.center = self.parent.pan_zoom_handler.world_2_screen(self.x + self.getWidth() / 2, self.y + self.getHeight() / 2)
+        self.center = self.imageRect.center
     def collect_resources(self, collector):
         for key, value in self.resources.items():
             if value > 0:
@@ -64,6 +69,8 @@ class CollectableItem(WidgetBase, Moveable):
         if collector:
             self.collect_resources(collector)
             source.utils.Globals.app.event_text = "You are a lucky Guy! you just found some resources: " + self.collect_text
+            collector.target = None
+            collector = None
             self.__del__()
 
     def execute(self, kwargs):
@@ -86,10 +93,15 @@ class CollectableItem(WidgetBase, Moveable):
                     self.enable()
                     self.explored = True
     def draw(self, **kwargs):
-
+        self.set_center()
         #self.set_screen_position(self._x, self._y)
         self.set_screen_position()
-        self.win.blit(self.image, (self._x, self._y))
+        #self.win.blit(self.image, (self._x * self.get_zoom(), self._y * self.get_zoom()))
+        #self.win.blit(self.image, (self.image.get_rect()))
+        #self.win.blit(self.image, ((self._x + self.getWidth())* self.get_zoom(), (self._y + self.getHeight()) * self.get_zoom()))
+        self.imageRect.center = self.parent.pan_zoom_handler.world_2_screen(self.x + self.getWidth()/2, self.y + self.getHeight()/2)
+        self.imageRect[2:] = self.getWidth()/self.get_zoom()
+        self.win.blit(self.image, self.parent.pan_zoom_handler.world_2_screen(self.x, self.y))
 
     def on_hover_release_callback(self, x, y):
         if self.contains(x, y):

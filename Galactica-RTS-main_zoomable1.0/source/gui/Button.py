@@ -567,11 +567,11 @@ class Button(WidgetBase, Moveable):
         self.center = (self.getX() + self.getWidth() / 2, self.getY() + self.getHeight() / 2)
 
     def setImage(self, image):
-        surface = pygame.surface.Surface((self.getWidth(), self.getHeight()))
-        surface_rect = surface.get_rect()
-        surface_rect.x = self._x
-        surface_rect.y = self._y
-        surface.set_alpha(0)
+        # surface = pygame.surface.Surface((self.getWidth(), self.getHeight()))
+        # surface_rect = surface.get_rect()
+        # surface_rect.x = self._x
+        # surface_rect.y = self._y
+        # surface.set_alpha(0)
 
         self.image = image
         self.win.blit(image, self.image.get_rect())

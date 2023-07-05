@@ -4,6 +4,7 @@ import pygame
 from pygame_widgets.util import drawText
 
 import source
+from source.utils import Globals
 from source.utils.Globals import debug
 
 
@@ -14,14 +15,25 @@ def get_distance(pos_a, pos_b):
     :param pos_b:
     :return: distance
     """
-    x = pos_a[0]
-    y = pos_a[1]
-    x1 = pos_b[0]
-    y1 = pos_b[1]
 
-    dist_x = (x1 - x)
-    dist_y = (y1 - y)
+    if Globals.app:
+
+        x,y = Globals.app.pan_zoom_handler.screen_2_world(pos_a[0], pos_a[1])
+        x1,y1 = Globals.app.pan_zoom_handler.screen_2_world(pos_b[0], pos_b[1])
+
+        """
+        x, y = Globals.app.pan_zoom_handler.world_2_screen(pos_a[0], pos_a[1])
+        x1, y1 = Globals.app.pan_zoom_handler.world_2_screen(pos_b[0], pos_b[1])
+        """
+    else:
+
+        x = pos_a[0]
+        y = pos_a[1]
+        x1 = pos_b[0]
+        y1 = pos_b[1]
+
     distance = math.dist((x, y), (x1, y1))
+
 
     return distance
 

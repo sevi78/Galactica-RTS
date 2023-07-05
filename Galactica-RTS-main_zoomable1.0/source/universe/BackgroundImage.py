@@ -14,6 +14,7 @@ class BackgroundImage(WidgetBase, Moveable):
         self.layer = kwargs.get("layer", 0)
         self.surface = pygame.Surface((WIDTH, HEIGHT))
         self.surface.set_colorkey((60, 60, 60))
+        self.surface.set_alpha(0)
         self.image = kwargs.get("image", None)
         self.image = pygame.transform.scale(self.image, (self.win.get_width(), self.win.get_height()))
         self.color = colors.background_color

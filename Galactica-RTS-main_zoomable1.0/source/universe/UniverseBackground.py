@@ -5,6 +5,7 @@ import pygame
 from pygame import gfxdraw
 
 import source.utils.Globals
+from source import utils
 from source.gui.Button import Moveable
 from source.gui.WidgetHandler import WidgetBase
 from source.utils import limit_positions, images, colors
@@ -12,11 +13,14 @@ from source.utils.Globals import pictures_path
 
 
 class CelestialObject(WidgetBase, Moveable):
+    possible_directions = [-1, 1]
     def __init__(self, win, x, y, width, height, isSubWidget=False, **kwargs):
         WidgetBase.__init__(self, win, x, y, width, height, isSubWidget, **kwargs)
         Moveable.__init__(self, x, y, width, height, kwargs)
 
-        self.rotation = random.randint(-3, 3)
+        self.rotation = 0
+        self.rotation_direction = random.choice(CelestialObject.possible_directions)
+        self.rotation_speed = random.uniform(0.1,1.0)
         self.layer = kwargs.get("layer", 3)
         self.type = kwargs.get("type", "star")
         self.x = x
@@ -31,8 +35,9 @@ class CelestialObject(WidgetBase, Moveable):
             if self.type in self.rotateable:
                 self.image = pygame.transform.rotate(self.image_raw, random.randint(-369, 360))
             self.image_rect = self.image.get_rect()
-            self.image_rect.x = x
-            self.image_rect.y = y
+            # self.image_rect.x = x
+            # self.image_rect.y = y
+            self.image_rect.center = (x,y)
 
         self.parent = kwargs.get("parent")
         self.ui_parent = kwargs.get("ui_parent")
@@ -44,18 +49,34 @@ class CelestialObject(WidgetBase, Moveable):
     def listen(self, events):
         pass
 
+    def rot_center(self, image, angle, x, y):
+
+        rotated_image = pygame.transform.rotate(image, angle)
+        new_rect = rotated_image.get_rect(center=image.get_rect(center=(x, y)).center)
+
+        return rotated_image, new_rect
+
     def draw(self):
         self.set_screen_position()
         if not self._hidden:
             if self.image:
-                # if self.type == "asteroid":
-                #     image = pygame.transform.rotate(self.image,self.rotation )
-                #     self.image = image
+                if self.type == "asteroid":
 
-                self.image_rect.x = self.getX() - self.image.get_size()[0] / 2
-                self.image_rect.y = self.getY() - self.image.get_size()[1] / 2
+                    #image = pygame.transform.rotate(self.image,self.rotation )
 
-                self.win.blit(self.image, self.image_rect)
+
+                    rotated_image, new_rect =  self.rot_center(self.image, self.rotation,self._x, self._y  )
+
+                    self.image = rotated_image
+                    self.image_rect = new_rect
+                    self.win.blit(self.image, (self.image_rect))
+                    self.rotation += self.rotation_speed * self.rotation_direction
+                    return
+
+
+                self.image_rect.x = self.getX() + self.image.get_size()[0] / 2 * self.get_zoom()
+                self.image_rect.y = self.getY() + self.image.get_size()[1] / 2 * self.get_zoom()
+                self.win.blit(self.image, (self.image_rect))
 
             elif self.type == "pulsating_star":
                 t = pygame.time.Clock().get_time() * 0.001
@@ -64,20 +85,21 @@ class CelestialObject(WidgetBase, Moveable):
 
                 flicker = s
                 c = int(127 * max(0.5, 1 + math.cos(t + flicker)))
-                try:
-                    gfxdraw.pixel(self.win, x, y, (c, c, c))
-                except TypeError:
-                    print(TypeError)
 
+                gfxdraw.pixel(self.win, int(x), int(y), (c, c, c))
+
+            elif self.type == "quadrant":
+                if utils.Globals.show_grid:
+                    x,y = utils.Globals.app.pan_zoom_handler.world_2_screen(self.x , self.y)
+                    pygame.draw.rect(self.win, colors.frame_color, (
+                    x,y, self.getWidth() / self.get_zoom(), self.getHeight() / self.get_zoom()), 1)
 
             else:
                 color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
                 # pygame.draw.circle(self.win, color, (self._x + self._width , self._y), self.width)
                 pygame.draw.lines(self.win, color, True, [(self._x + 1, self._y), (self._x + 1, self._y)])
 
-        if self.type == "quadrant":
-            if source.utils.Globals.show_grid:
-                pygame.draw.rect(self.win, colors.frame_color, (self._x, self._y, self.getWidth() / self.get_zoom(), self.getHeight() / self.get_zoom()), 1)
+
 
 
 class Universe(WidgetBase, Moveable):
@@ -130,20 +152,8 @@ class Universe(WidgetBase, Moveable):
         self.universe = []
         self.quadrant = []
 
-        #self.quadrant = Quadrant(self.win, self.x, self.y, self.getWidth(), self.getHeight(), isSubWidget=False, parent=self, layer= 8)
-
         # create universe
         self.create_universe()
-
-    def create_pulsating_star(self) -> None:
-        """
-        Add a new star to the simulation.
-        """
-        self.stars.append([
-            random.randrange(1, self.menu.get_width()),  # x position
-            random.randrange(1, self.menu.get_height()),  # y position
-            2 * math.pi * random.random()  # initial flickering
-            ])
 
     def create_stars(self):
         # star images
@@ -164,12 +174,12 @@ class Universe(WidgetBase, Moveable):
             w = random.randint(1, 10)
             star = CelestialObject(self.win, x, y, w, w, layer=self.layer, parent=self, type="star")
 
-        # # puslatoing stars
-        # for i in range(int(self.amount / 3)):
-        #     x = random.randint(self.left_end, self.right_end)
-        #     y = random.randint(self.top_end, self.bottom_end)
-        #     w = 1
-        #     star = CelestialObject(self.win, x, y, w, w, layer=self.layer, parent=self, type="pulsating_star")
+        # puslatoing stars
+        for i in range(int(self.amount / 3)):
+            x = random.randint(self.left_end, self.right_end)
+            y = random.randint(self.top_end, self.bottom_end)
+            w = 1
+            star = CelestialObject(self.win, x, y, w, w, layer=self.layer, parent=self, type="pulsating_star")
 
     def create_galaxys(self):
         for i in range(int(self.amount / 300)):
@@ -222,7 +232,9 @@ class Universe(WidgetBase, Moveable):
         for x in range(quadrant_amount):
             for y in range(quadrant_amount):
                 w,h = quadrant_size_x, quadrant_size_y
-                quadrant = CelestialObject(self.win, quadrant_size_x*x, quadrant_size_y*y, w, h, image=None, layer=0, parent=self, type="quadrant")
+                quadrant = CelestialObject(
+                    self.win, quadrant_size_x * x, quadrant_size_y * y, w, h,
+                    image=None, layer=0, parent=self, type="quadrant")
 
     def create_universe(self):
         self.create_stars()
@@ -238,7 +250,8 @@ class Universe(WidgetBase, Moveable):
 
     def draw(self):
         for celestial_object in self.universe:
-            limit_positions(celestial_object)
+            if not celestial_object.type == "quadrant":
+                limit_positions(celestial_object)
             celestial_object.draw()
             # if celestial_object.type == "quadrant":
             #     if not celestial_object._hidden:

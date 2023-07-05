@@ -7,12 +7,6 @@ from source.utils import debug_positions
 
 # Zoom with mousewheel, pan with left mouse button
 
-SCREEN_WIDTH = 920  # sprite_sheet.get_rect().size[0]
-SCREEN_HEIGHT = 800  # sprite_sheet.get_rect().size[1]
-WORLD_WIDTH = 2000
-WORLD_HEIGHT = 2000
-# screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-clock = pg.time.Clock()
 
 
 class PanZoomHandler:
@@ -46,8 +40,8 @@ class PanZoomHandler:
 
         self.tab = 1
         self.zoom = 1
-        self.zoom_max = 20
-        self.zoom_min = 0.1
+        self.zoom_max = 1.5
+        self.zoom_min = 0.0001
 
         self.update_screen = True
         self.panning = False
@@ -56,19 +50,12 @@ class PanZoomHandler:
     def listen(self, events):
         # Mouse screen coords
         mouse_x, mouse_y = pg.mouse.get_pos()
+        #print (self.zoom)
 
         # event handler
         for event in events:
-            # ctrl:
-            if event.type == pygame.KEYDOWN:
-                if event.key == 1073742048:  # ctrl:
-                    self.key_pressed = True
 
-            elif event.type == pygame.KEYUP:
-                if event.key == 1073742048:
-                    self.key_pressed = False
-
-            elif event.type == pg.MOUSEBUTTONDOWN:
+            if event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 4 or event.button == 5:
                     # X and Y before the zoom
                     self.mouseworld_x_before, self.mouseworld_y_before = self.screen_2_world(mouse_x, mouse_y)
@@ -128,30 +115,15 @@ class PanZoomHandler:
         """
         sets the world offset to the objects position
         """
+
+        # get ship to navigate to if not object is set
         ship = kwargs.get("ship", None)
-        if not obj:
-            if ship:
-                obj = [i for i in self.parent.ships if i.name == ship][0]
 
-        self.world_offset_x, self.world_offset_y = self.screen_2_world(obj.getX() - self.screen_width/2, obj.getY() - self.screen_height/2)
+        if not obj and ship:
+            obj = [i for i in self.parent.ships if i.name == ship][0]
 
+        # set position
+        self.world_offset_x, self.world_offset_y = self.screen_2_world(obj.getX() - self.screen_width / 2, obj.getY() - self.screen_height / 2)
 
-#
-# pan_zoom_handler = PanZoomHandler(screen, SCREEN_WIDTH, SCREEN_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT)
-# zoomable_widget = Zoomable_Widget(screen, 100,100,100,100,isSubWidget=False,image=sprite_sheet, onClick=lambda: print("ok"))
-# pan_zoom_handler.zoomable_widgets.append(zoomable_widget)
-#
-# # game loop
-# loop = True
-# while loop:
-#     # Banner FPS
-#     #pg.display.set_caption('(%d FPS)' % (clock.get_fps()))
-#
-#     # events, listen
-#     events = pg.event.get()
-#     pan_zoom_handler.listen(events)
-#
-#     # looping
-#     update(events)
-#     pg.display.update()
-#     clock.tick(600)
+        # set info panel
+        obj.set_info_text()

@@ -158,6 +158,11 @@ def main(test: bool = False, **kwargs) -> None:
         toggleswitch_id='enable_orbit', align=pygame_menu.locals.ALIGN_RIGHT,
         )
 
+    settings_menu.add.toggle_switch('enable_game_events', settings["enable_game_events"],
+        toggleswitch_id='enable_game_events', align=pygame_menu.locals.ALIGN_RIGHT,
+        )
+
+
     settings_menu.add.range_slider('Game Speed:', settings["game_speed"], (1, 25), 1,
         rangeslider_id='game_speed',
         value_format=lambda x: str(int(x)), align=pygame_menu.locals.ALIGN_RIGHT)

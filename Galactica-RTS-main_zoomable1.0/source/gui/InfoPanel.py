@@ -6,33 +6,6 @@ from source.gui.WidgetHandler import WidgetBase
 from source.utils import colors, images
 
 
-class ShipButtons: #???? whatsd this ?? no usage, wrong place ??
-    def __init__(self):
-        self.visible = False
-        self.speed_up_button = ImageButton(source.utils.Globals.win, self.getX(), self.getY() + self.getHeight(), 32, 32,
-            isSubWidget=False, image=images[source.utils.Globals.pictures_path]["icons"]["speed_up.png"],
-            onClick=lambda: print("Ok"))
-
-        self.radius_button = ImageButton(source.utils.Globals.win, self.getX() + self.getWidth(), self.getY() + self.getHeight(),
-            32, 32, isSubWidget=False, image=images[source.utils.Globals.pictures_path]["icons"]["radius.png"],
-            onClick=lambda: print("Ok"))
-
-    def reposition_buttons(self):
-        self.spacing = 15
-        self.speed_up_button.setX(self.getX() + self.getWidth() + self.spacing)
-        self.speed_up_button.setY(self.getY() + self.getHeight())
-        self.radius_button.setX(self.getX() + self.getWidth() + self.spacing)
-        self.radius_button.setY(self.getY() + self.getHeight() - self.spacing * 3)
-
-    def hide_buttons(self):
-        self.speed_up_button.hide()
-        self.radius_button.hide()
-
-    def show_buttons(self):
-        self.speed_up_button.show()
-        self.radius_button.show()
-
-
 class InfoPanel(WidgetBase):
     def __init__(self, win, x, y, width, height, isSubWidget, **kwargs):
         super().__init__(win, x, y, width, height, isSubWidget, **kwargs)

@@ -15,10 +15,6 @@ from source.utils import colors, sounds, images
 from source.utils.Globals import pictures_path
 
 
-
-
-
-
 class PlanetButtons():
     """
     base class of Planet. stores the buttons and some variables.
@@ -33,7 +29,6 @@ class PlanetButtons():
         self.win = self.parent.win
         self.population_buildings = ["town", "city", "metropole"]
         self.population_buildings_values = {"town": 1000, "city": 10000, "metropole": 100000}
-
 
     def hide_building_buttons(self):
         for buttonarray in self.building_buttons_list:
@@ -249,6 +244,8 @@ class PlanetButtons():
         self.smiley_button.hide()
         self.thumpsup_button.hide()
         self.overview_buttons.append(self.smiley_button)
+
+
 class BuildingSlot:
     """ this handles the building slot up/down grades and the tooltips
     this code is absolutely terrible, but it works :)
@@ -632,7 +629,7 @@ class BuildingPanel(WidgetBase, BuildingSlot):
             parent=self,
             image=pygame.transform.scale(
                 images[pictures_path]["ships"]["spacehunter_30x30.png"], (25, 25)),
-            tooltip="navigate to this ship, not working yet",
+            tooltip="navigate to this ship",
             frame_color=colors.frame_color,
             moveable=False,
             include_text=True, layer=self.layer,
@@ -651,6 +648,7 @@ class BuildingPanel(WidgetBase, BuildingSlot):
             moveable=False,
             include_text=True, layer=self.layer,
             onClick=lambda: self.set_info_text())
+
         self.planet_editor_icon = ImageButton(win=self.win,
             x=self.info_icon.getX() - 50,
             y=self.clock_slider.getY(),
@@ -665,6 +663,7 @@ class BuildingPanel(WidgetBase, BuildingSlot):
             moveable=False,
             include_text=True, layer=self.layer,
             onClick=lambda: PlanetEditor.main(surface=self.win))
+
         self.building_editor_icon = ImageButton(win=self.win,
             x=self.planet_editor_icon.getX() - 50,
             y=self.clock_slider.getY(),
@@ -679,6 +678,7 @@ class BuildingPanel(WidgetBase, BuildingSlot):
             moveable=False,
             include_text=True, layer=self.layer,
             onClick=lambda: BuildingEditor.main(surface=self.win))
+
         self.orbit_icon = ImageButton(win=self.win,
             x=self.building_editor_icon.getX() - 50,
             y=self.clock_slider.getY(),
@@ -693,6 +693,7 @@ class BuildingPanel(WidgetBase, BuildingSlot):
             moveable=False,
             include_text=True, layer=self.layer,
             onClick=lambda: self.set_global_variable("show_orbit", True))
+
         self.grid_icon = ImageButton(win=self.win,
             x=self.building_editor_icon.getX() - 50,
             y=self.clock_slider.getY(),
@@ -746,7 +747,6 @@ class BuildingPanel(WidgetBase, BuildingSlot):
         self.parent.set_selected_planet(my_list[0])
         utils.Globals.app.pan_zoom_handler.navigate_to(self.parent.selected_planet)
 
-
     def show_planet_selection_buttons(self):
         if len(self.parent.explored_planets) > 1:
             self.planet_minus_arrow_button.show()
@@ -758,6 +758,7 @@ class BuildingPanel(WidgetBase, BuildingSlot):
         # self.planet_buttons.show_overview_button()
         # for i in self.planet_buttons.possible_resources:
         #     self.planet_buttons.show_building_buttons(i)
+
     def listen(self, events):
         # DESTROY BUILDINGS
         # check for mouse collision with image
@@ -893,7 +894,7 @@ class BuildingPanel(WidgetBase, BuildingSlot):
             if pic in images[pictures_path]["planets"].keys():
                 self.planet_image = images[pictures_path]["planets"][pic]
             else:
-                self.planet_image = pygame.transform.scale(self.parent.selected_planet.image.copy(), (150, 150))
+                self.planet_image = pygame.transform.scale(self.parent.selected_planet.image_raw.copy(), (150, 150))
 
             self.planet_image.set_alpha(128)
             self.win.blit(self.planet_image, self.planet_surface_rect.midtop)

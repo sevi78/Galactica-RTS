@@ -181,51 +181,6 @@ class SceneBuilder(SceneParams):
 
             self.ships.append(ship)
 
-    def create_planets_old(self, level):
-        """
-        creates the planets based on the level from Levels (level_dict)
-        :param level:
-        """
-        for planetname, planetparams in level_dict[level].items():
-            # print (planetname,planetparams)
-            width = int(planetparams["image_name"].split("_")[1].split("x")[0])
-            height = int(planetparams["image_name"].split("_")[1].split("x")[1].split(".png")[0])
-
-            # dirty hack to fix the position
-            planetparams["x"] = planet_positions[planetname][0]
-            planetparams["y"] = planet_positions[planetname][1]
-            planetparams["position"] = planet_positions[planetname]
-
-            planet_button = Planet(win=source.utils.Globals.win,
-                x=int(planetparams["x"]),
-                y=int(planetparams["y"]),
-                width=width,
-                height=height,
-                isSubWidget=False,
-                image=images[pictures_path]["planets"][planetparams["image_name"]],
-                transparent=True,
-
-                info_text=planet_texts[planetparams["name"]],
-                text=planetparams["name"],
-                textColour=colors.frame_color,
-                property="planet",
-                name=planetparams["name"],
-                parent=self,
-                tooltip="send your ship to explore the planet!",
-                possible_resources=planetparams["possible_resources"],
-                moveable=moveable,
-                hover_image=images[pictures_path]["icons"]["selection_150x150.png"],
-                textVAlign="below_the_bottom",
-                layer=3)
-
-            self.planet_buttons.append(planet_button)
-
-        # set orbit_object
-        sun = [i for i in self.planets if i.name == "Sun"][0]
-        for i in self.planets:
-            if not i == sun:
-                i.set_orbit_object(sun)
-
     def create_planets(self, level):
         """
         creates the ppanets based on the level from Lovels (level_dict)

@@ -157,18 +157,14 @@ class ShipMoving:
         # if not self.energy <= 1:
         #     self.set_energy_reloader(None)
 
-
-
-        #rotate image to target
-
         self.track_to(self.target)
 
         self.play_travel_sound()
 
-        self.reach_goal(get_distance((self.getX(), self.getY()), (self.validate_target())), self.target)
+        self.reach_goal(get_distance((self.getX(), self.getY()), (self.validate_target())))
 
-        if self.target:
-            self.calculate_travel_cost(get_distance((self.getX(), self.getY()), (self.validate_target())))
+
+
 
         self.things_to_be_done_while_traveling()
 
@@ -187,34 +183,31 @@ class ShipMoving:
             sounds.play_sound(self.hum, channel=self.sound_channel, loops=1000, fade_ms=500)
             self.hum_playing = True
 
-    def reach_goal(self, distance, target):
+    def develop_planet(self):
+        if self.target.explored:
+            return
+
+        self.set_experience(1000)
+        self.parent.info_panel.set_planet_image(self.target.image_raw)
+        self.target.get_explored()
+
+    def reach_goal(self, distance):
+        panzoom = self.parent.pan_zoom_handler
+
         # if goal reached (planet)
         if hasattr(self.target, "x"):
-            if distance <= target.getWidth():
+            #print (distance, self.target.imageRect[2])
+            # develop planet if distance is near enough
+            if distance < self.target.imageRect[2]:
                 if hasattr(self.target, "property"):
                     if self.target.property == "planet":
-                        self.target.explored = True
-
-                        # set event_text
-                        self.parent.event_text = "WELL DONE! your ship has just reached a habitable planet! : " + self.target.name
-
-                        # self.parent.draw()
-                        self.parent.fog_of_war.draw_fog_of_war(self.target)
+                        self.develop_planet()
 
                         # unload_cargo goods
                         self.unload_cargo()
-
-                        # reset selection/target
                         self.set_energy_reloader(self.target)
-                        #self.set_orbit_object(self.target)
-                        #self.enable_orbit = True
-                        #self.orbit_distance = 1#get_distance((self.getX(), self.getY()), (target.getX(), target.getY()))
-                        #self.offset.x = 1
-                        #self.orbit_distance = get_distance((self.x, self.y), (target.x, target.y)) - self.offset.x
-                        #self.orbit_speed = 10
-                        #
-                        #
 
+                    # collect item
                     if self.target.property == "item":
                         self.target.get_collected()
                 else:
@@ -224,11 +217,10 @@ class ShipMoving:
                 sounds.stop_sound(self.sound_channel)
 
                 self.hum_playing = False
-
                 self.moving = False
 
         elif hasattr(self.target, "crew"):
-            if distance <= target.getWidth():
+            if distance <= self.target.getWidth():
                 # set event_text
                 self.parent.event_text = "your ship has just reached a another ship: " + self.target.name + "reloading ship: " + self.name + "from : " + self.target.name
 
@@ -236,9 +228,6 @@ class ShipMoving:
                 self.set_energy_reloader(self.target)
                 self.target = None
                 self.select(False)
-
-                # whats this for ?!???
-                self.rect = self.imageRect
                 sounds.stop_sound(self.sound_channel)
                 self.hum_playing = False
                 self.moving = False
@@ -249,23 +238,21 @@ class ShipMoving:
                 self.select(False)
                 sounds.stop_sound(self.sound_channel)
                 self.hum_playing = False
-
-                # whats this for ?!???
-                self.rect = self.imageRect
                 self.moving = False
 
     def things_to_be_done_while_traveling(self):
+        #print("things_to_be_done_while_traveling",self.target, self.moving, self.energy_reloader )
         # set progress bar position
         self.set_progressbar_position()
 
         # draw fog of war
         self.parent.fog_of_war.draw_fog_of_war(self)
 
-        # develop planet if distance is near enough
-        self.develop_planet()
-
         # get experience
-        self.set_experience(1)
+        if self.moving:
+            self.set_experience(1)
+            self.calculate_travel_cost(get_distance((self.getX(), self.getY()), (self.validate_target())))
+
 
     def calculate_travel_cost(self, distance):
         # calculate travelcosts
@@ -531,20 +518,6 @@ class ShipParams:
             if self.tooltip != "":
                 utils.Globals.tooltip_text = self.tooltip
 
-    def develop_planet(self):
-        for i in WidgetHandler.layers[3]:
-            if "Planet" in str(i):
-                if i.name == "Sun": return
-                if int(self.get_distance_to(i)) <= i.fog_of_war_radius:
-                    if not i.explored:
-                        self.set_experience(1000)
-                        self.parent.event_text = f"WELL DONE! your {self.name} has just reached a habitable planet! : " + i.name
-                        i.show()
-                        self.parent.set_selected_planet(i)
-                        self.parent.fog_of_war.draw_fog_of_war(i)
-                        self.set_info_text()
-                        i.explored = True
-
     def get_distance_to(self, obj):
         x = self.getX()
         y = self.getY()
@@ -688,7 +661,6 @@ class Ship(WidgetBase, ShipParams, ShipMoving, Moveable, ShipRanking, ShipButton
         self.parent.ships.append(self)
 
     def set_center(self):
-
         self.center = (self.getX() + self.getWidth() / 2/self.get_zoom(), self.getY() + self.getHeight() / 2/self.get_zoom())
 
     def select(self, value):

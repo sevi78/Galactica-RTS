@@ -92,6 +92,9 @@ debug = False
 global enable_orbit
 enable_orbit = settings["enable_orbit"]
 
+global enable_game_events
+enable_game_events = settings["enable_game_events"]
+
 global show_orbit
 show_orbit = False
 

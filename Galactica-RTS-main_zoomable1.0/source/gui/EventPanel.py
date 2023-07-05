@@ -257,6 +257,9 @@ class EventPanel(WidgetBase):
         """
         calls the game events based on time or conditions
         """
+        if not Globals.enable_game_events:
+            return
+
         self.event_time += 1 * Globals.game_speed
         self.create_random_event()
 

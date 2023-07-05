@@ -9,7 +9,7 @@ class Spaceship(Ship):
         self.sound_channel = 1
 
         # setup Game variables
-        self.speed = 0.1
+        self.speed = .1
         self.energy_max = 10000
         self.energy = 10000
         self.energy_use = 0.0005
@@ -44,7 +44,7 @@ class Cargoloader(Ship):
         self.sound_channel = 2
 
         # setup Game variables
-        self.speed = 0.02
+        self.speed = .02
         self.energy_max = 20000
         self.energy = 15000
         self.energy_use = 0.001
@@ -79,7 +79,7 @@ class Spacehunter(Ship):
         self.hum = sounds.hum3
         self.sound_channel = 3
         # setup Game variables
-        self.speed = 0.2
+        self.speed = .2
         self.energy_max = 5000
         self.energy = 5000
         self.energy_use = 0.0015

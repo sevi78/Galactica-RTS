@@ -289,13 +289,21 @@ class WidgetBase(ABC, Debugger):
                 if hasattr(self.target, "_x"):
                     tx, ty = self.target._x, self.target._y
                 else:
+                    #tx, ty = panzoom.screen_2_world(self.target[0], self.target[1])
                     tx, ty = self.target
+
 
                 dx = (self._x - tx)
                 dy = (self._y - ty)
+                #dist   = get_distance((self._x, self._y),(tx, ty))
 
-                self.x -= dx/100
-                self.y -= dy/100
+                self.x -= dx / utils.Globals.fps / self.get_zoom() * self.speed * utils.Globals.game_speed
+                self.y -= dy / utils.Globals.fps / self.get_zoom() * self.speed * utils.Globals.game_speed
+
+
+                # xw,yw =  panzoom.world_2_screen(dx, dy)
+                # self.x -= xw * self.speed * utils.Globals.game_speed
+                # self.y -= yw * self.speed * utils.Globals.game_speed
 
         # if it is button
         if hasattr(self, "ui_parent"):
@@ -341,7 +349,6 @@ class WidgetHandler:
     6 = 
     7 =
     8 = ships
-    
     9 = ui 
     """
 

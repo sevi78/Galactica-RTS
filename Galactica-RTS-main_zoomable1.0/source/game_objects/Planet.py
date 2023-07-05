@@ -15,9 +15,6 @@ from source.utils.saveload import *
 from source.utils.sounds import sounds
 
 
-
-
-
 class Planet(Button, PlanetButtons):
     """ this is the planet class, inherited from:
     from pygame_widgets.button import Button
@@ -385,7 +382,7 @@ class Planet(Button, PlanetButtons):
             self.parent.fog_of_war.draw_fog_of_war(self)
 
             if not self.name == "Sun":
-                self.tooltip = "right click to build something useful!"
+                self.tooltip = "build something useful!"
                 self.text.set_alpha(255)
 
             # only the first time after exploring
@@ -406,6 +403,9 @@ class Planet(Button, PlanetButtons):
         called only once when the planet gets explored
         shows buttons ect
         """
+        if self.explored:
+            return
+
         sounds.play_sound(sounds.happy, channel=4)
         self.planet_button_array.enable()
         for i in self.planet_button_array.getButtons():
@@ -414,3 +414,4 @@ class Planet(Button, PlanetButtons):
         self.show_overview_button()
         self.parent.set_selected_planet(self)
         self.parent.explored_planets.append(self)
+        self.explored = True
